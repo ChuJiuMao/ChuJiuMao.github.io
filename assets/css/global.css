@@ -313,14 +313,16 @@ pre code { background: none; padding: 0; }
 
 /* ---------- Back to Home ---------- */
 .back-home {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.3em;
+  max-width: var(--content-width, 780px);
+  margin: 1rem auto;
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
   font-family: var(--heading-font);
   font-size: 0.85rem;
   color: var(--muted);
   text-decoration: none;
-  margin: 1rem 0;
 }
 .back-home:hover { color: var(--theme-color); }
 
@@ -355,4 +357,25 @@ pre code { background: none; padding: 0; }
   .nav-inner { padding: 0 1rem; }
   .post-nav { flex-direction: column; }
   .post-nav .nav-next { text-align: left; }
+}
+
+/* ---------- Extra Small Screens ---------- */
+@media (max-width: 480px) {
+  .nav-inner { padding: 0 .8rem; gap: .5rem; height: 56px; }
+  .nav-inner .logo { font-size: 1rem; }
+  .breadcrumb {
+    padding: .8rem 1rem 0;
+    font-size: .78rem;
+    white-space: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .footer { padding: 1.5rem 1rem 2rem; font-size: .78rem; }
+  .post-nav { padding: 1.5rem 1rem; }
+}
+
+/* ---------- Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  .fab:hover { transform: none; }
 }

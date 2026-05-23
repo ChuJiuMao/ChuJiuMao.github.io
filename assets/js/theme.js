@@ -209,3 +209,24 @@
     });
   }
 })();
+
+// ---- Article page: TOC mobile drawer ----
+(function() {
+  const sidebar = document.getElementById('tocSidebar');
+  const btn = document.getElementById('tocToggleBtn');
+  const overlay = document.getElementById('tocOverlay');
+  if (!sidebar || !btn) return;
+
+  function close() {
+    sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
+  }
+  btn.addEventListener('click', function() {
+    sidebar.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('open');
+  });
+  if (overlay) overlay.addEventListener('click', close);
+  sidebar.addEventListener('click', function(e) {
+    if (e.target.closest('a')) close();
+  });
+})();

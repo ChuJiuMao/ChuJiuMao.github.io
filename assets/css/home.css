@@ -190,3 +190,32 @@
   .category-tabs { padding: 0 1.5rem; overflow-x: auto; flex-wrap: nowrap; }
   .content-wrap { padding: 0 1.5rem 3rem; }
 }
+@media (max-width: 480px) {
+  .hero { padding: 1.5rem 1rem 1rem; }
+  .profile-info h1 { font-size: 1.3rem; }
+  .profile-info .bio { font-size: .88rem; }
+  .category-tabs { padding: 0 1rem; gap: .2rem; }
+  .category-tab { padding: .4rem .7rem; font-size: .8rem; }
+  .content-wrap { padding: 0 1rem 2rem; }
+  .post-item { padding: 1.4rem 0; }
+  .post-title { font-size: 1.05rem; line-height: 1.35; }
+  .post-authors { font-size: .8rem; }
+  .post-excerpt { font-size: .88rem; line-height: 1.6; }
+  .post-stats { font-size: .75rem; }
+}
+
+/* ---------- Touch device hover suppression ---------- */
+@media (hover: none) {
+  .post-item a:hover .post-title { color: inherit; }
+}
+
+/* ---------- Root page content wrappers (about, archives, categories) ---------- */
+@media (max-width: 640px) {
+  .page-title { padding: 2rem 1.5rem 0 !important; font-size: 1.3rem !important; }
+  .page-subtitle { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
+  .about-wrap, .archive-wrap, .categories-wrap { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
+  .about-card { padding: 1.2rem; }
+  .archive-item { flex-direction: column; gap: .2rem; padding: .5rem .4rem; }
+  .archive-date { min-width: auto; }
+  .cat-post-item { padding: .5rem .4rem; }
+}

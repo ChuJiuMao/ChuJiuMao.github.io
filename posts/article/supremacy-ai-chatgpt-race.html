@@ -107,7 +107,12 @@
   <button class="fab" id="settingsToggle" title="阅读设置"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
   </button>
   <button class="fab" id="topBtn" title="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg></button>
+  <button class="fab fab-toc" id="tocToggleBtn" title="目录" aria-label="目录">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h10M4 18h16"/></svg>
+  </button>
 </div>
+
+<div class="toc-overlay" id="tocOverlay"></div>
 
 <nav class="nav-bar">
   <div class="nav-inner">
@@ -1394,7 +1399,7 @@
   </main>
 </div>
 
-<a href="../../index.html" class="back-home" style="display:flex; max-width:780px; margin:0 auto; padding:0 2.5rem;">← 返回首页</a>
+<a href="../../index.html" class="back-home">← 返回首页</a>
 
 <div class="settings-panel" id="settingsPanel">
   <div class="panel-header">
@@ -1402,14 +1407,108 @@
     <button class="close-btn" id="settingsClose" type="button">&times;</button>
   </div>
   <div class="section">
-    <div class="section-title">字体</div>
-    <div class="field"><label for="fontSize">字体大小</label><input type="range" id="fontSize" min="14" max="24" step="1" value="17"><span class="val" id="fontSizeVal">17px</span></div>
-    <div class="field"><label for="lineHeight">行间距</label><input type="range" id="lineHeight" min="1.3" max="2.5" step="0.05" value="1.8"><span class="val" id="lineHeightVal">1.80</span></div>
+    <div class="section-title">字体 Typography</div>
+    <div class="field">
+      <label for="headingFont">标题字体</label>
+      <select id="headingFont">
+        <option value="Inter,Noto Sans SC,PingFang SC,sans-serif">Inter / Sans CN</option>
+        <option value="Noto Serif SC,Source Serif 4,Songti SC,Georgia,serif">Serif CN</option>
+        <option value="Georgia,Source Serif 4,serif">Georgia</option>
+        <option value="Noto Sans SC,PingFang SC,Microsoft YaHei,sans-serif">黑体 Sans</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="bodyFont">正文字体</label>
+      <select id="bodyFont">
+        <option value="Source Serif 4,Noto Serif SC,Songti SC,Georgia,serif">Source Serif / 宋体</option>
+        <option value="Noto Sans SC,PingFang SC,Microsoft YaHei,sans-serif">Sans CN / 黑体</option>
+        <option value="Georgia,Noto Serif SC,serif">Georgia</option>
+        <option value="Inter,Noto Sans SC,Segoe UI,sans-serif">Inter / Sans</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="fontSize">字体大小</label>
+      <input type="range" id="fontSize" min="14" max="24" step="1" value="17">
+      <span class="val" id="fontSizeVal">17px</span>
+    </div>
   </div>
   <div class="section">
-    <div class="section-title">布局</div>
-    <div class="field"><label for="contentWidth">正文宽度</label><input type="range" id="contentWidth" min="600" max="1100" step="20" value="780"><span class="val" id="contentWidthVal">780px</span></div>
-    <div class="field"><label for="tocToggle">显示目录</label><label class="switch"><input type="checkbox" id="tocToggle" checked><span class="slider"></span></label></div>
+    <div class="section-title">间距 Spacing</div>
+    <div class="field">
+      <label for="lineHeight">行间距</label>
+      <input type="range" id="lineHeight" min="1.3" max="2.5" step="0.05" value="1.8">
+      <span class="val" id="lineHeightVal">1.80</span>
+    </div>
+    <div class="field">
+      <label for="paraSpacing">段落间距</label>
+      <input type="range" id="paraSpacing" min="0.3" max="2.5" step="0.1" value="1.2">
+      <span class="val" id="paraSpacingVal">1.2em</span>
+    </div>
+    <div class="field">
+      <label for="indentToggle">段首缩进</label>
+      <label class="switch"><input type="checkbox" id="indentToggle"><span class="slider"></span></label>
+    </div>
+    <div class="field">
+      <label for="justifyToggle">两端对齐</label>
+      <label class="switch"><input type="checkbox" id="justifyToggle"><span class="slider"></span></label>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">布局 Layout</div>
+    <div class="field">
+      <label for="contentWidth">正文宽度</label>
+      <input type="range" id="contentWidth" min="600" max="1100" step="20" value="780">
+      <span class="val" id="contentWidthVal">780px</span>
+    </div>
+    <div class="field">
+      <label for="boundaryToggle">正文边界线</label>
+      <label class="switch"><input type="checkbox" id="boundaryToggle"><span class="slider"></span></label>
+    </div>
+    <div class="field">
+      <label for="tocToggle">显示目录</label>
+      <label class="switch"><input type="checkbox" id="tocToggle" checked><span class="slider"></span></label>
+    </div>
+    <div class="field">
+      <label for="tocWidth">目录宽度</label>
+      <input type="range" id="tocWidth" min="180" max="360" step="10" value="240">
+      <span class="val" id="tocWidthVal">240px</span>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">日间配色 Day Colors</div>
+    <div class="field">
+      <label for="dayThemeColor">主题色</label>
+      <input type="color" id="dayThemeColor" value="#286983">
+      <span class="val" id="dayThemeColorVal">#286983</span>
+    </div>
+    <div class="field">
+      <label for="dayTextColor">文字色</label>
+      <input type="color" id="dayTextColor" value="#575279">
+      <span class="val" id="dayTextColorVal">#575279</span>
+    </div>
+    <div class="field">
+      <label for="dayBgColor">背景色</label>
+      <input type="color" id="dayBgColor" value="#faf4ed">
+      <span class="val" id="dayBgColorVal">#faf4ed</span>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">夜间配色 Night Colors</div>
+    <div class="field">
+      <label for="nightThemeColor">主题色</label>
+      <input type="color" id="nightThemeColor" value="#9ccfd8">
+      <span class="val" id="nightThemeColorVal">#9ccfd8</span>
+    </div>
+    <div class="field">
+      <label for="nightTextColor">文字色</label>
+      <input type="color" id="nightTextColor" value="#e0def4">
+      <span class="val" id="nightTextColorVal">#e0def4</span>
+    </div>
+    <div class="field">
+      <label for="nightBgColor">背景色</label>
+      <input type="color" id="nightBgColor" value="#191724">
+      <span class="val" id="nightBgColorVal">#191724</span>
+    </div>
   </div>
 </div>
 
