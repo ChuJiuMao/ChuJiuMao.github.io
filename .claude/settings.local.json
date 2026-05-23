@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(python3 *)",
+      "WebFetch(domain:www.nature.com)",
+      "Bash(curl *)",
+      "WebSearch"
     ]
   }
 }

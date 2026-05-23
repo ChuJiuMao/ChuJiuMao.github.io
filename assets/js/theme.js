@@ -241,3 +241,72 @@
     if (e.target.closest('a')) close();
   });
 })();
+
+// ---- Article page: TOC tree toggle ----
+(function() {
+  const sidebar = document.getElementById('tocSidebar');
+  const nav = sidebar && sidebar.querySelector('nav ol');
+  if (!nav) return;
+  // Skip if this TOC already has custom tree toggle classes (e.g. supremacy)
+  if (nav.querySelector('.toc-item, .toc-part-toggle')) return;
+
+  // Add toggle triangles and master button
+  function initTree() {
+    // 1. Add toggle triangles to items with nested <ol>
+    nav.querySelectorAll('li').forEach(function(li) {
+      const childOl = li.querySelector(':scope > ol');
+      if (!childOl) return;
+      li.classList.add('toc-has-sub');
+      childOl.classList.add('toc-children');
+
+      const toggle = document.createElement('span');
+      toggle.className = 'toc-toggle expanded';
+      toggle.tabIndex = 0;
+      toggle.setAttribute('role', 'button');
+      toggle.setAttribute('aria-label', '展开/收拢');
+      li.insertBefore(toggle, li.firstChild);
+
+      toggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        li.classList.toggle('expanded');
+        toggle.classList.toggle('expanded');
+        updateMasterBtn();
+      });
+    });
+
+    // 2. Add master toggle to .toc-header
+    const header = sidebar.querySelector('.toc-header');
+    if (header && !header.querySelector('.toc-tree-btn')) {
+      const masterBtn = document.createElement('button');
+      masterBtn.className = 'toc-tree-btn';
+      masterBtn.id = 'tocTreeBtn';
+      masterBtn.title = '展开/收拢所有子条目';
+      masterBtn.textContent = '> <';
+      header.appendChild(masterBtn);
+
+      masterBtn.addEventListener('click', function() {
+        const hasExpanded = nav.querySelectorAll('.toc-has-sub.expanded').length > 0;
+        nav.querySelectorAll('.toc-has-sub').forEach(function(li) {
+          if (hasExpanded) {
+            li.classList.remove('expanded');
+            li.querySelector(':scope > .toc-toggle')?.classList.remove('expanded');
+          } else {
+            li.classList.add('expanded');
+            li.querySelector(':scope > .toc-toggle')?.classList.add('expanded');
+          }
+        });
+        updateMasterBtn();
+      });
+    }
+    updateMasterBtn();
+  }
+
+  function updateMasterBtn() {
+    const masterBtn = document.getElementById('tocTreeBtn');
+    if (!masterBtn) return;
+    const hasExpanded = nav.querySelectorAll('.toc-has-sub.expanded').length > 0;
+    masterBtn.textContent = hasExpanded ? '< >' : '> <';
+  }
+
+  initTree();
+})();
