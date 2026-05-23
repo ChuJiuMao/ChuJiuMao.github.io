@@ -71,15 +71,19 @@
     const input = document.getElementById(id);
     const valEl = document.getElementById(id + 'Val');
     if (!input || !valEl) return;
-    if (prefs[id] !== undefined) input.value = prefs[id];
-    function apply() {
+    const hasUserPref = prefs[id] !== undefined;
+    if (hasUserPref) {
+      input.value = prefs[id];
+      document.documentElement.style.setProperty(cssVar, prefs[id] + unit);
+    }
+    valEl.textContent = (formatter ? formatter(input.value) : input.value) + unit;
+    input.addEventListener('input', function() {
       const v = input.value;
       document.documentElement.style.setProperty(cssVar, v + unit);
       valEl.textContent = (formatter ? formatter(v) : v) + unit;
-      prefs[id] = v; save(prefs);
-    }
-    input.addEventListener('input', apply);
-    apply();
+      prefs[id] = v;
+      save(prefs);
+    });
   }
 
   bindRange('fontSize', '--font-size', 'px');
@@ -92,13 +96,15 @@
   function bindSelect(id, cssVar) {
     const input = document.getElementById(id);
     if (!input) return;
-    if (prefs[id]) input.value = prefs[id];
-    function apply() {
-      document.documentElement.style.setProperty(cssVar, input.value);
-      prefs[id] = input.value; save(prefs);
+    if (prefs[id]) {
+      input.value = prefs[id];
+      document.documentElement.style.setProperty(cssVar, prefs[id]);
     }
-    input.addEventListener('change', apply);
-    apply();
+    input.addEventListener('change', function() {
+      document.documentElement.style.setProperty(cssVar, input.value);
+      prefs[id] = input.value;
+      save(prefs);
+    });
   }
 
   bindSelect('headingFont', '--heading-font');
@@ -108,10 +114,15 @@
   function bindToggle(id, onChange) {
     const input = document.getElementById(id);
     if (!input) return;
-    if (typeof prefs[id] === 'boolean') input.checked = prefs[id];
-    function apply() { onChange(input.checked); prefs[id] = input.checked; save(prefs); }
-    input.addEventListener('change', apply);
-    apply();
+    if (typeof prefs[id] === 'boolean') {
+      input.checked = prefs[id];
+      onChange(input.checked);
+    }
+    input.addEventListener('change', function() {
+      onChange(input.checked);
+      prefs[id] = input.checked;
+      save(prefs);
+    });
   }
 
   bindToggle('indentToggle', checked => { document.documentElement.style.setProperty('--indent', checked ? '2em' : '0em'); });
