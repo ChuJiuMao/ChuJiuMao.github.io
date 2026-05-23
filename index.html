@@ -6,48 +6,113 @@
 <title>ChuJiuMao's Blog</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Source+Serif+4:opsz@8..60&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
+/* ===== Rosé Pine Palette + Orange Theme Structure ===== */
 :root {
-  --bg: #faf4ed;
+  --base: #faf4ed;
   --surface: #fffaf3;
-  --text: #575279;
+  --overlay: #f2e9e1;
   --muted: #9893a5;
+  --subtle: #797593;
+  --text: #575279;
+  --love: #b4637a;
+  --gold: #ea9d34;
+  --rose: #d7827e;
   --pine: #286983;
   --foam: #56949f;
   --iris: #907aa9;
-  --love: #b4637a;
-  --hl: #dfdad9;
+  --hl-low: #f4ede8;
+  --hl-med: #dfdad9;
+  --font-sans: 'Inter', 'Noto Sans SC', 'PingFang SC', sans-serif;
+  --font-serif: 'Noto Serif SC', 'Source Serif 4', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-  background: var(--bg);
+  background: var(--base);
   color: var(--text);
-  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
 }
-.container { max-width: 720px; margin: 0 auto; padding: 4rem 2rem; }
 
-/* Header */
-header { margin-bottom: 3.5rem; }
-header h1 {
-  font-size: 2.2rem;
+/* ===== Navigation Bar (Orange-inspired) ===== */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--hl-med);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.nav-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+.nav-inner .logo {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+.nav-inner .logo span {
+  color: var(--pine);
+}
+.nav-inner .nav-links a {
+  font-size: 0.88rem;
+  color: var(--subtle);
+  text-decoration: none;
+  margin-left: 1.5rem;
+  transition: color 0.2s;
+  font-weight: 500;
+}
+.nav-inner .nav-links a:hover {
+  color: var(--pine);
+}
+
+/* ===== Hero / Header ===== */
+.hero {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 4rem 2rem 2rem;
+}
+.hero h1 {
+  font-family: var(--font-sans);
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 0.6rem;
   color: var(--text);
 }
-header p {
+.hero h1 span { color: var(--pine); }
+.hero p {
+  font-size: 1.05rem;
   color: var(--muted);
-  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 520px;
 }
 
-/* Article list */
-.post-list { list-style: none; }
+/* ===== Article List (Orange-inspired clean list) ===== */
+.content-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
 .post-item {
-  padding: 1.5rem 0;
-  border-bottom: 1px solid var(--hl);
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--hl-med);
 }
 .post-item:last-child { border-bottom: none; }
 .post-item a {
@@ -55,85 +120,143 @@ header p {
   text-decoration: none;
   color: var(--text);
 }
-.post-item a:hover h3 { color: var(--pine); }
-.post-item h3 {
-  font-size: 1.1rem;
+.post-item a:hover .post-title {
+  color: var(--pine);
+}
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+.post-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--foam);
+  border: 1px solid var(--foam);
+  border-radius: 3px;
+  padding: 0.05em 0.5em;
+}
+.post-date {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-family: var(--font-sans);
+}
+.post-title {
+  font-family: var(--font-sans);
+  font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.3rem;
   transition: color 0.2s;
 }
-.post-item .meta {
+.post-authors {
   font-size: 0.85rem;
-  color: var(--muted);
-}
-.post-item .desc {
-  font-size: 0.9rem;
-  color: var(--muted);
-  margin-top: 0.4rem;
-  line-height: 1.6;
-}
-
-/* Tag */
-.tag {
-  display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--foam);
+  color: var(--subtle);
   margin-bottom: 0.3rem;
 }
+.post-excerpt {
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-top: 0.4rem;
+}
+.post-stats {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+}
 
-/* Footer */
-footer {
-  margin-top: 4rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--hl);
+/* ===== Footer ===== */
+.footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 2rem 3rem;
+  border-top: 1px solid var(--hl-med);
   text-align: center;
   color: var(--muted);
   font-size: 0.85rem;
 }
-footer a { color: var(--foam); text-decoration: none; }
-footer a:hover { text-decoration: underline; }
+.footer a {
+  color: var(--foam);
+  text-decoration: none;
+}
+.footer a:hover { text-decoration: underline; }
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .hero h1 { font-size: 2rem; }
+  .hero { padding: 2.5rem 1.5rem 1.5rem; }
+  .content-wrap { padding: 0 1.5rem 3rem; }
+  .nav-inner { padding: 0 1.2rem; }
+}
 </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1>ChuJiuMao's Blog</h1>
-    <p>学术文章笔记 · 阅读与翻译</p>
-  </header>
 
-  <ul class="post-list">
-    <li class="post-item">
-      <a href="volitional-neuromorphic-devices.html">
-        <div class="tag">Nature Communications · 2026</div>
-        <h3>基于亚皮焦耳每比特意动神经形态器件的精准目标识别与跟踪</h3>
-        <div class="meta">Yixuan Huang, Qihao Sun, Fuxing Dai et al.</div>
-        <div class="desc">通过引入主动意动注意力机制，实现 0.625 pJ/bit 的极致信息能量效率和 1.17% 的数据压缩比，用于高光谱成像中的精准目标识别与跟踪。</div>
-      </a>
-    </li>
-    <li class="post-item">
-      <a href="adaptive-spatial-temporal-attention.html">
-        <div class="tag">Nature Communications · 2025</div>
-        <h3>基于存内注意力启发器件的自适应时空信息处理</h3>
-        <div class="meta">Jiong Pan, Fan Wu, Kangan Qian et al.</div>
-        <div class="desc">利用0D-2D异维调制的注意力启发器件，实现自适应时空信息处理，在自动驾驶边缘智能场景中达到百倍以上的能效提升。</div>
-      </a>
-    </li>
-    <li class="post-item">
-      <a href="simple-input-output-dependencies.html">
-        <div class="tag">Nature · 2024</div>
-        <h3>简单的输入-输出依赖关系揭示生态记忆</h3>
-        <div class="meta">Work by Bernice & Tennenholtz</div>
-        <div class="desc">通过简单输入-输出依赖关系分析揭示生态系统中的记忆效应，提供理解生态系统动态的新视角。</div>
-      </a>
-    </li>
-  </ul>
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a href="/" class="logo"><span>C</span>huJiuMao</a>
+    <div class="nav-links">
+      <a href="/">首页</a>
+      <a href="https://github.com/ChuJiuMao">GitHub</a>
+    </div>
+  </div>
+</nav>
 
-  <footer>
-    <p>Built with Claude Code &middot; <a href="https://github.com/ChuJiuMao/ChuJiuMao.github.io">Source</a></p>
-  </footer>
+<div class="hero">
+  <h1>学术文章 <span>阅读笔记</span></h1>
+  <p>将前沿学术论文转换为可读的中文译本，涵盖神经形态计算、存内计算等方向。</p>
 </div>
+
+<div class="content-wrap">
+
+  <article class="post-item">
+    <a href="volitional-neuromorphic-devices.html">
+      <div class="post-meta">
+        <span class="post-tag">Nature Communications</span>
+        <span class="post-date">2026</span>
+      </div>
+      <h2 class="post-title">基于亚皮焦耳每比特意动神经形态器件的精准目标识别与跟踪</h2>
+      <div class="post-authors">Yixuan Huang, Qihao Sun, Fuxing Dai et al.</div>
+      <p class="post-excerpt">通过引入主动意动注意力（AVA）机制，利用栅压可调差分光谱响应，实现 0.625 pJ/bit 的极致信息能量效率和 1.17% 的数据压缩比，为高光谱成像中的精准目标识别与跟踪提供了可持续的类脑计算方案。</p>
+      <div class="post-stats">~ 6,000 字 · 4 张图片 · 46 篇参考文献</div>
+    </a>
+  </article>
+
+  <article class="post-item">
+    <a href="adaptive-spatial-temporal-attention.html">
+      <div class="post-meta">
+        <span class="post-tag">Nature Communications</span>
+        <span class="post-date">2025</span>
+      </div>
+      <h2 class="post-title">基于存内注意力启发器件的自适应时空信息处理</h2>
+      <div class="post-authors">Jiong Pan, Fan Wu, Kangan Qian et al.</div>
+      <p class="post-excerpt">利用 0D-2D 异维调制的注意力启发器件，实现存内模拟计算的自适应时空信息处理原语。在自动驾驶边缘智能场景中达到 190 倍面积缩减、47 倍延迟降低和 1411 倍能耗节约。</p>
+      <div class="post-stats">~ 7,000 字 · 4 张图片 · 46 篇参考文献</div>
+    </a>
+  </article>
+
+  <article class="post-item">
+    <a href="simple-input-output-dependencies.html">
+      <div class="post-meta">
+        <span class="post-tag">Nature</span>
+        <span class="post-date">2024</span>
+      </div>
+      <h2 class="post-title">简单的输入-输出依赖关系揭示生态记忆</h2>
+      <div class="post-authors">Bernice &amp; Tennenholtz</div>
+      <p class="post-excerpt">通过简单的输入-输出依赖关系分析揭示生态系统中的记忆效应，为理解生态系统动态提供新的理论视角。</p>
+    </a>
+  </article>
+
+</div>
+
+<footer class="footer">
+  <p>Built with <a href="https://claude.ai">Claude Code</a> · Theme: Orange × <a href="https://rosepinetheme.com">Rosé Pine</a></p>
+</footer>
+
 </body>
 </html>
