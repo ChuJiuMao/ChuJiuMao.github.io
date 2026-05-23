@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>简单输入-输出依赖解释神经元活动 — Paper Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$','$'],['\\(','\\)']],
+    displayMath: [['$$','$$'],['\\[','\\]']],
+    tags: 'ams'
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+/* ===== Rosé Pine Color Palette ===== */
+:root {
+  /* Day mode: Rosé Pine Dawn */
+  --day-base: #faf4ed;
+  --day-surface: #fffaf3;
+  --day-overlay: #f2e9e1;
+  --day-muted: #9893a5;
+  --day-subtle: #797593;
+  --day-text: #575279;
+  --day-love: #b4637a;
+  --day-gold: #ea9d34;
+  --day-rose: #d7827e;
+  --day-pine: #286983;
+  --day-foam: #56949f;
+  --day-iris: #907aa9;
+  --day-hl-low: #f4ede8;
+  --day-hl-med: #dfdad9;
+  --day-hl-high: #cecacd;
+
+  /* Night mode: Rosé Pine Main */
+  --night-base: #191724;
+  --night-surface: #1f1d2e;
+  --night-overlay: #26233a;
+  --night-muted: #6e6a86;
+  --night-subtle: #908caa;
+  --night-text: #e0def4;
+  --night-love: #eb6f92;
+  --night-gold: #f6c177;
+  --night-rose: #ebbcba;
+  --night-pine: #31748f;
+  --night-foam: #9ccfd8;
+  --night-iris: #c4a7e7;
+  --night-hl-low: #21202e;
+  --night-hl-med: #403d52;
+  --night-hl-high: #524f67;
+
+  /* Active theme (day default) */
+  --theme-color: var(--day-pine);
+  --text-color: var(--day-text);
+  --bg-color: var(--day-base);
+  --surface: var(--day-surface);
+  --overlay: var(--day-overlay);
+  --muted: var(--day-muted);
+  --subtle: var(--day-subtle);
+  --love: var(--day-love);
+  --gold: var(--day-gold);
+  --rose: var(--day-rose);
+  --foam: var(--day-foam);
+  --iris: var(--day-iris);
+  --hl-low: var(--day-hl-low);
+  --hl-med: var(--day-hl-med);
+  --hl-high: var(--day-hl-high);
+
+  /* Typography */
+  --heading-font: 'Inter', 'Noto Sans SC', 'PingFang SC', sans-serif;
+  --body-font: 'Source Serif 4', 'Noto Serif SC', 'Songti SC', Georgia, serif;
+  --mono-font: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  --font-size: 17px;
+  --line-height: 1.8;
+  --para-spacing: 1.2em;
+  --indent: 0em;
+  --text-align: left;
+
+  /* Layout */
+  --content-width: 780px;
+  --toc-width: 240px;
+  --boundary: transparent;
+}
+
+[data-theme="night"] {
+  --theme-color: var(--night-foam);
+  --text-color: var(--night-text);
+  --bg-color: var(--night-base);
+  --surface: var(--night-surface);
+  --overlay: var(--night-overlay);
+  --muted: var(--night-muted);
+  --subtle: var(--night-subtle);
+  --love: var(--night-love);
+  --gold: var(--night-gold);
+  --rose: var(--night-rose);
+  --foam: var(--night-foam);
+  --iris: var(--night-iris);
+  --hl-low: var(--night-hl-low);
+  --hl-med: var(--night-hl-med);
+  --hl-high: var(--night-hl-high);
+}
+
+/* ===== Base Reset & Body ===== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--body-font);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  transition: background 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--theme-color);
+  color: var(--bg-color);
+}
+
+/* ===== Links ===== */
+a {
+  color: var(--theme-color);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s, color 0.2s;
+}
+a:hover {
+  border-bottom-color: var(--theme-color);
+}
+
+/* ===== Code ===== */
+code, pre { font-family: var(--mono-font); }
+code {
+  font-size: 0.87em;
+  background: var(--hl-low);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+}
+pre {
+  background: var(--surface);
+  border: 1px solid var(--hl-med);
+  border-radius: 6px;
+  padding: 1em 1.2em;
+  overflow-x: auto;
+  line-height: 1.5;
+  margin: 1.5em 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ===== Page Layout ===== */
+.page-wrapper {
+  display: grid;
+  grid-template-columns: var(--toc-width) minmax(0, 1fr);
+  min-height: 100vh;
+  transition: grid-template-columns 0.3s ease;
+}
+.page-wrapper.no-toc {
+  grid-template-columns: 0 minmax(0, 1fr);
+}
+.page-wrapper.no-toc .toc-sidebar {
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ===== TOC Sidebar ===== */
+.toc-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 2.5rem 1rem 3rem 1.5rem;
+  border-right: 1px solid var(--hl-med);
+  background: var(--surface);
+  transition: opacity 0.3s, width 0.3s, padding 0.3s;
+}
+.toc-sidebar h2 {
+  margin: 0 0 1.2rem;
+  font-family: var(--heading-font);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.toc-sidebar nav ol {
+  list-style: none;
+  padding: 0; margin: 0;
+}
+.toc-sidebar nav li { margin: 0.3rem 0; }
+.toc-sidebar nav a {
+  display: block;
+  padding: 0.35rem 0.7rem;
+  border-left: 2px solid transparent;
+  border-radius: 0 4px 4px 0;
+  font-family: var(--heading-font);
+  font-size: 0.85rem;
+  color: var(--muted);
+  border-bottom: none;
+}
+.toc-sidebar nav a:hover,
+.toc-sidebar nav a.active {
+  color: var(--theme-color);
+  border-left-color: var(--theme-color);
+  background: var(--hl-low);
+}
+
+/* ===== Main Content Area ===== */
+.paper-main {
+  max-width: var(--content-width);
+  width: 100%;
+  margin: 0 auto;
+  padding: 3rem 2.5rem 6rem;
+  border-left: 1px solid var(--boundary);
+  border-right: 1px solid var(--boundary);
+  min-height: 100vh;
+}
+
+/* ===== Article Header (Nature style) ===== */
+.paper-header { margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--hl-med); }
+.paper-header .article-type {
+  display: inline-block;
+  font-family: var(--heading-font);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--theme-color);
+  margin-bottom: 0.8rem;
+}
+.paper-header h1 {
+  margin: 0 0 0.6rem;
+  font-family: var(--heading-font);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-color);
+}
+.paper-header .authors {
+  margin: 0.8rem 0 0.5rem;
+  font-family: var(--heading-font);
+  font-size: 0.95rem;
+  color: var(--theme-color);
+}
+.paper-header .authors a { font-weight: 500; }
+.paper-header .meta-line {
+  font-family: var(--heading-font);
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0.3rem 0;
+}
+.paper-header .meta-line a { color: var(--foam); }
+.paper-header .doi-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  margin-top: 0.6rem;
+  font-family: var(--heading-font);
+  font-size: 0.85rem;
+  color: var(--foam);
+  border-bottom: 1px solid transparent;
+}
+.paper-header .doi-link:hover { border-bottom-color: var(--foam); }
+
+/* ===== Section Headings ===== */
+.paper-body h2 {
+  font-family: var(--heading-font);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--hl-med);
+  color: var(--text-color);
+}
+.paper-body h3 {
+  font-family: var(--heading-font);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 2rem 0 0.8rem;
+  color: var(--text-color);
+}
+.paper-body h4 {
+  font-family: var(--heading-font);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.6rem;
+  color: var(--subtle);
+}
+
+/* ===== Paragraphs ===== */
+.paper-body p {
+  margin: 0 0 var(--para-spacing);
+  text-align: var(--text-align);
+  text-indent: var(--indent);
+  hyphens: auto;
+}
+.paper-body .figure + p,
+.paper-body .table-wrap + p,
+.paper-body blockquote + p {
+  text-indent: 0;
+}
+
+/* ===== Figures (caption below, centered) ===== */
+.figure {
+  margin: 2em 0;
+  text-align: center;
+}
+.figure img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--text-color) 8%, transparent);
+}
+.figure figcaption {
+  margin-top: 0.8em;
+  font-family: var(--heading-font);
+  font-size: 0.88em;
+  color: var(--subtle);
+  line-height: 1.5;
+  text-align: center;
+}
+.figure figcaption .fig-label {
+  font-weight: 700;
+  color: var(--text-color);
+  margin-right: 0.3em;
+}
+.figure figcaption .fig-label a {
+  color: var(--text-color);
+  border-bottom: none;
+}
+
+/* ===== Tables (caption above, centered) ===== */
+.table-wrap {
+  margin: 2em 0;
+  overflow-x: auto;
+}
+.table-wrap .table-caption {
+  margin-bottom: 0.7em;
+  font-family: var(--heading-font);
+  font-size: 0.88em;
+  color: var(--subtle);
+  line-height: 1.5;
+  text-align: center;
+}
+.table-wrap .table-caption .tbl-label {
+  font-weight: 700;
+  color: var(--text-color);
+  margin-right: 0.3em;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92em;
+  margin: 0 auto;
+}
+thead th {
+  border-top: 2px solid var(--text-color);
+  border-bottom: 1px solid var(--text-color);
+  padding: 0.6em 0.8em;
+  font-family: var(--heading-font);
+  font-weight: 600;
+  font-size: 0.9em;
+  text-align: left;
+}
+tbody td {
+  padding: 0.55em 0.8em;
+  border-bottom: 1px solid var(--hl-med);
+}
+tbody tr:last-child td {
+  border-bottom: 2px solid var(--text-color);
+}
+tbody tr:hover { background: var(--hl-low); }
+
+/* ===== References ===== */
+.references-section {
+  margin-top: 3.5em;
+  padding-top: 1.2em;
+  border-top: 1px solid var(--hl-med);
+}
+.references-section h2 {
+  font-size: 1.1rem;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0.8rem;
+}
+.references-section ol {
+  padding-left: 1.5em;
+  margin: 0;
+  font-size: 0.9em;
+  color: var(--subtle);
+  line-height: 1.7;
+}
+.references-section li {
+  margin: 0.6em 0;
+  padding-left: 0.3em;
+}
+.references-section li:target {
+  background: var(--hl-low);
+  border-radius: 3px;
+  padding: 0.3em 0.5em;
+  margin-left: -0.5em;
+}
+.ref-links {
+  font-family: var(--heading-font);
+  font-size: 0.85em;
+  margin-left: 0.3em;
+}
+.ref-links a { margin: 0 0.3em; }
+
+/* In-text citation links */
+a.cite-ref {
+  font-size: 0.88em;
+  color: var(--theme-color);
+  border-bottom: none;
+  font-weight: 500;
+}
+a.cite-ref:hover { text-decoration: underline; }
+
+/* ===== Math (MathJax) ===== */
+.math-block {
+  margin: 1.8em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  text-align: center;
+}
+.math-block .eq-number {
+  float: right;
+  color: var(--muted);
+  font-family: var(--heading-font);
+  font-size: 0.9em;
+  margin-top: 0.5em;
+}
+mjx-container[display="true"] { margin: 1.5em 0 !important; }
+
+/* ===== Blockquote ===== */
+blockquote {
+  margin: 1.8em 0;
+  padding: 0.9em 1.3em;
+  border-left: 3px solid var(--iris);
+  background: var(--hl-low);
+  border-radius: 0 6px 6px 0;
+  color: var(--subtle);
+}
+blockquote p:last-child { margin-bottom: 0; }
+blockquote cite {
+  display: block;
+  margin-top: 0.5em;
+  font-size: 0.88em;
+  font-style: normal;
+  color: var(--muted);
+}
+
+/* ===== Lists ===== */
+.paper-body ul, .paper-body ol {
+  padding-left: 1.5rem;
+  margin: 0 0 var(--para-spacing);
+}
+.paper-body li { margin: 0.35rem 0; }
+
+/* ===== Floating Buttons ===== */
+.fab-group {
+  position: fixed;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  z-index: 100;
+}
+.fab {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--hl-med);
+  background: var(--surface);
+  color: var(--subtle);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--text-color) 8%, transparent);
+}
+.fab:hover {
+  color: var(--theme-color);
+  border-color: var(--theme-color);
+  transform: scale(1.08);
+}
+.fab svg { width: 18px; height: 18px; }
+
+/* ===== Settings Panel ===== */
+.settings-overlay {
+  position: fixed; inset: 0;
+  background: color-mix(in srgb, var(--text-color) 25%, transparent);
+  z-index: 198;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+.settings-overlay.open { opacity: 1; pointer-events: auto; }
+
+.settings-panel {
+  position: fixed; top: 0; right: 0;
+  width: 380px; max-width: 92vw; height: 100vh;
+  background: var(--surface);
+  border-left: 1px solid var(--hl-med);
+  padding: 2rem 1.5rem;
+  overflow-y: auto;
+  z-index: 199;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: -4px 0 24px color-mix(in srgb, var(--text-color) 10%, transparent);
+}
+.settings-panel.open { transform: translateX(0); }
+
+.settings-panel .panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.settings-panel .panel-header h3 {
+  margin: 0;
+  font-family: var(--heading-font);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+.settings-panel .close-btn {
+  width: 30px; height: 30px;
+  background: none; border: none;
+  color: var(--muted); cursor: pointer;
+  font-size: 1.4rem; line-height: 1;
+  border-radius: 4px;
+}
+.settings-panel .close-btn:hover { color: var(--love); background: var(--hl-low); }
+
+.settings-panel .section {
+  margin-bottom: 1.6rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--hl-med);
+}
+.settings-panel .section:last-child { border-bottom: none; }
+.settings-panel .section-title {
+  font-family: var(--heading-font);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.7rem;
+}
+
+.settings-panel .field {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin: 0.6rem 0;
+  font-family: var(--heading-font);
+  font-size: 0.88rem;
+  color: var(--subtle);
+}
+.settings-panel .field label { flex-shrink: 0; min-width: 5.5em; }
+.settings-panel .field .val {
+  min-width: 3.5em;
+  text-align: right;
+  font-size: 0.8em;
+  color: var(--muted);
+  font-family: var(--mono-font);
+}
+
+.settings-panel select {
+  flex: 1;
+  padding: 0.4em 0.5em;
+  background: var(--hl-low);
+  border: 1px solid var(--hl-med);
+  border-radius: 4px;
+  color: var(--text-color);
+  font: inherit; font-size: 0.88rem;
+}
+
+.settings-panel input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none; appearance: none;
+  height: 4px;
+  background: var(--hl-med);
+  border-radius: 2px;
+  outline: none; cursor: pointer;
+}
+.settings-panel input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  background: var(--theme-color);
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+.settings-panel input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px;
+  background: var(--theme-color);
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+
+/* Toggle switch */
+.switch { position: relative; display: inline-block; width: 28px; height: 18px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch .slider {
+  position: absolute; inset: 0;
+  background: var(--hl-med);
+  border-radius: 999px;
+  transition: 0.25s;
+}
+.switch .slider::before {
+  content: '';
+  position: absolute; left: 2px; top: 2px;
+  width: 14px; height: 14px;
+  background: var(--surface);
+  border-radius: 50%;
+  transition: left 0.25s;
+}
+.switch input:checked + .slider { background: var(--theme-color); }
+.switch input:checked + .slider::before { left: calc(100% - 16px); }
+
+/* Color picker field */
+.color-field {
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.color-field input[type="color"] {
+  -webkit-appearance: none; appearance: none;
+  width: 28px; height: 28px;
+  border: 2px solid var(--hl-med);
+  border-radius: 6px;
+  padding: 0; cursor: pointer;
+  background: none;
+}
+.color-field input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+.color-field input[type="color"]::-webkit-color-swatch { border: none; border-radius: 3px; }
+
+/* ===== Responsive ===== */
+@media (max-width: 1100px) {
+  .page-wrapper { grid-template-columns: 0 1fr; }
+  .toc-sidebar { display: none; }
+  .paper-main { padding: 2.5rem 1.5rem 5rem; }
+}
+@media (max-width: 640px) {
+  .paper-main { padding: 2rem 1rem 4rem; }
+  .paper-header h1 { font-size: 1.6rem; }
+  .fab-group { right: 0.8rem; }
+  .settings-panel { width: 100vw; max-width: 100vw; }
+}
+
+/* Day/Night icon visibility */
+[data-theme="day"] .icon-moon { display: block; }
+[data-theme="day"] .icon-sun { display: none; }
+[data-theme="night"] .icon-moon { display: none; }
+[data-theme="night"] .icon-sun { display: block; }
+
+/* Data/Code availability boxes */
+.data-box {
+  background: var(--hl-low);
+  border-left: 3px solid var(--foam);
+  padding: 0.8em 1.2em;
+  margin: 1.2em 0;
+  border-radius: 0 4px 4px 0;
+  font-family: var(--heading-font);
+  font-size: 0.92em;
+}
+.data-box strong {
+  display: block;
+  margin-bottom: 0.3em;
+  color: var(--text-color);
+}
+.data-box a { border-bottom: none; }
+</style>
+</head>
+<body>
+
+<!-- Floating Action Buttons -->
+<div class="fab-group">
+  <button class="fab" id="themeToggle" title="Toggle day/night mode">
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+  </button>
+  <button class="fab" id="settingsToggle" title="Reading settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+  </button>
+  <button class="fab" id="topBtn" title="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+</div>
+
+<!-- Page Wrapper -->
+<div class="page-wrapper" id="pageWrapper">
+
+  <!-- TOC Sidebar -->
+  <aside class="toc-sidebar" id="tocSidebar">
+    <h2>目录</h2>
+    <nav>
+      <ol>
+        <li><a href="#abstract" class="active">摘要</a></li>
+        <li><a href="#main">引言</a></li>
+        <li><a href="#minimal-consequences">直接依赖的最小后果</a></li>
+        <li><a href="#optimal-inputs">识别最优输入</a></li>
+        <li><a href="#across-systems">跨系统与物种的直接依赖</a></li>
+        <li><a href="#higher-order">高阶与时延依赖</a></li>
+        <li><a href="#discussion">讨论</a></li>
+        <li><a href="#methods">方法</a></li>
+        <li><a href="#references">参考文献</a></li>
+      </ol>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="paper-main" id="paperMain">
+
+    <!-- Paper Header -->
+    <header class="paper-header">
+      <span class="article-type">Article</span>
+      <h1>简单输入-输出依赖解释神经元活动</h1>
+      <p class="authors">
+        <a href="#">Christopher W. Lynn</a>
+      </p>
+      <p class="meta-line"><em>Nature Physics</em>（2026）</p>
+      <p class="meta-line">发表时间：2026年5月18日 &nbsp;|&nbsp; doi: <a href="https://doi.org/10.1038/s41567-026-03306-3">10.1038/s41567-026-03306-3</a></p>
+      <a class="doi-link" href="https://doi.org/10.1038/s41567-026-03306-3" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        https://doi.org/10.1038/s41567-026-03306-3
+      </a>
+    </header>
+
+    <!-- Paper Body -->
+    <div class="paper-body" id="paperBody">
+
+      <!-- 摘要 -->
+      <section id="abstract">
+        <h2>摘要</h2>
+        <p>我们对神经计算的理解建立在这样一个假设之上：神经元是对输入的线性求和做出放电响应。然而，实验表明某些神经元能够执行需要输入之间相互作用的复杂功能。本文证明，直接依赖关系——即不考虑输入之间的相互作用——能够解释神经元活动中的绝大部分变异性。来自多个脑区和物种的神经元可以被模型定量描述，这些模型仅捕捉了对每个单独输入的测量依赖性，但对输入的组合不预设任何假设。这些最小模型等价于逻辑斯谛人工神经元，能够预测复杂的高阶依赖关系，并恢复突触连接中已知的特征。所推断出的神经网络是稀疏的，表明神经编码具有高度冗余性，且对扰动具有鲁棒性。这些结果提示，尽管生物物理细节极其复杂，大多数神经元可以用简单的人工模型来描述。</p>
+      </section>
+
+      <!-- 引言 -->
+      <section id="main">
+        <h2>引言</h2>
+        <p>神经元从线虫 <em>Caenorhabditis elegans</em> 中数十个<a class="cite-ref" href="#ref-1">[1]</a>、果蝇中数百到数千个<a class="cite-ref" href="#ref-2">[2]</a>、以及小鼠、猴子和人类中数千到数万个<a class="cite-ref" href="#ref-3">[3]</a>其他神经元接收突触输入。随着输入数量的增长，可能计算的空间呈指数级爆炸。为了驾驭这种复杂性，简化的模型长期假设神经元的输出直接依赖于单个输入，而不存在输入之间的相互作用<a class="cite-ref" href="#ref-4">[4]</a><a class="cite-ref" href="#ref-5">[5]</a><a class="cite-ref" href="#ref-6">[6]</a><a class="cite-ref" href="#ref-7">[7]</a><a class="cite-ref" href="#ref-8">[8]</a><a class="cite-ref" href="#ref-9">[9]</a>。虽然这一图景构成了我们对神经计算（无论是在大脑中还是在人工网络中）理解的基础，但直接依赖关系本身是否能解释真实神经元的活动尚不清楚。</p>
+
+        <p>如今，在不同物种和神经系统中，已经可以对大型连续神经元群体进行长期稳定的记录<a class="cite-ref" href="#ref-10">[10]</a><a class="cite-ref" href="#ref-11">[11]</a><a class="cite-ref" href="#ref-12">[12]</a><a class="cite-ref" href="#ref-13">[13]</a><a class="cite-ref" href="#ref-14">[14]</a>。这意味着对于每个神经元，我们可以同时获取其输出和所有输入。但如何确定每个神经元的活动是由对单个输入的简单依赖关系产生，还是需要输入之间的复杂相互作用？为回答这一问题，我们需要一个框架来量化直接依赖关系的最小后果。</p>
+      </section>
+
+      <!-- 直接依赖的最小后果 -->
+      <section id="minimal-consequences">
+        <h2>直接依赖的最小后果</h2>
+        <p>大脑中的神经元在树突处接收输入，然后执行一个二元函数：它们要么保持静默（$y = 0$），要么产生一个称为动作电位或锋电位的离散脉冲（$y = 1$）<a class="cite-ref" href="#ref-15">[15]</a><a class="cite-ref" href="#ref-16">[16]</a>（<a href="#fig-1">图 1a</a>）。这种从输入到输出的映射涉及膜电位动力学和细胞形态的复杂细节，这些细节因神经元、脑区和物种而异<a class="cite-ref" href="#ref-17">[17]</a><a class="cite-ref" href="#ref-18">[18]</a><a class="cite-ref" href="#ref-19">[19]</a>。然而，对于每个神经元而言，这些细节最终归结为一个放电概率表 $P(y = 1 \mid x_1, \ldots, x_n)$，定义了该细胞对其 $n$ 个输入 $x_1, \ldots, x_n$ 所执行的功能。这种描述虽然足够通用以涵盖每一个神经元，但也极其复杂——它需要为每一种输入组合指定一个不同的放电概率，而这一数量随 $n$ 呈指数增长（<a href="#fig-1">图 1b</a>）。因此，为了理解真实神经元执行的功能，我们需要简化的假设。</p>
+
+        <p>一个经典的假设是，输入与输出之间的依赖关系是<em>直接</em>的，即它们仅依赖于单个输入，而不依赖于输入之间的相互作用：</p>
+
+        <div class="math-block" id="eq-1">
+          $$P(y \mid x_1, \ldots, x_n) \approx P(y \mid x_1, \ldots, x_n)_{\text{dir}} \quad \text{其中} \quad P(y \mid x_i) \text{ 对所有 } i \text{ 固定 } \tag{1}$$
+        </div>
+
+        <p>为了检验这一假设，我们必须量化神经元活动中有多大比例可以被那些仅捕捉对单个输入测量依赖性、而在其他方面尽可能随机的模型所解释。这就是最大熵原理<a class="cite-ref" href="#ref-20">[20]</a><a class="cite-ref" href="#ref-21">[21]</a>。由此产生的最大熵模型<a class="cite-ref" href="#ref-22">[22]</a><a class="cite-ref" href="#ref-23">[23]</a>，等价于一个逻辑斯谛人工神经元，在匹配对单个输入的直接依赖关系的同时，关于所有其他相关性最大化熵。</p>
+
+        <p>如果一个神经元的活动确实由直接依赖关系主导，那么该模型将准确预测其输出。如果神经元依赖于输入之间的相互作用——例如 XOR 计算所需的那种（<a href="#fig-1">图 1g</a>）——模型将失败。孤立神经元的总熵 $S_{\text{tot}}$ 与最大熵模型的熵 $S_{\text{dir}}$ 之间的差值 $S_{\text{tot}} - S_{\text{dir}}$，量化了直接依赖关系所捕捉到的变异性大小（<a href="#fig-1">图 1c–f</a>）。当模型熵 $S_{\text{dir}}$ 很小时，输出成为输入的确定性函数，该神经元等价于一个 McCulloch–Pitts 神经元或感知机<a class="cite-ref" href="#ref-4">[4]</a><a class="cite-ref" href="#ref-7">[7]</a><a class="cite-ref" href="#ref-34">[34]</a>。</p>
+
+        <figure class="figure" id="fig-1">
+          <img src="https://media.springernature.com/lw1200/springer-static/image/art%3A10.1038%2Fs41567-026-03306-3/MediaObjects/41567_2026_3306_Fig1_HTML.png" alt="图 1：直接依赖关系所解释的变异性量化。" loading="lazy">
+          <figcaption>
+            <span class="fig-label"><a href="#fig-1">图 1</a></span>
+            直接依赖关系所解释的变异性量化。<strong>a</strong>，神经元执行一个二元函数，将输入 $x_1, \ldots, x_n$（来自其他神经元的传入信号）映射到输出 $y$（放电或不放电）。<strong>b</strong>，对神经元的完整描述需要为每种输入组合指定放电概率，这是一个指数级庞大的空间。<strong>c</strong>，总熵 $S_{\text{tot}}$ 表示在不知道输入的情况下输出的变异性。<strong>d</strong>，在直接依赖关系下，模型熵 $S_{\text{dir}}$ 捕捉剩余的变异性。<strong>e</strong>，真实熵 $S_{\text{true}}$ 是不可约的变异性。<strong>f</strong>，互信息 $I_{\text{dir}} = S_{\text{tot}} - S_{\text{dir}}$ 量化了直接依赖关系所捕捉到的变异性。<strong>g</strong>，高阶相互作用（如 XOR）需要输入的非线性整合。
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 识别最优输入 -->
+      <section id="optimal-inputs">
+        <h2>识别最优输入</h2>
+        <p>为了研究真实神经元，我们首先需要明确其输入。在大规模记录中，虽然突触连接通常未知，但我们可以推断那些能为神经元输出提供最佳描述的最优输入。在一个包含 $N$ 个神经元的群体中，对于给定的输出神经元，我们希望选出 $n < N$ 个输入，使其在纳入最大熵模型（<a href="#eq-1">方程 (1)</a>）后，尽可能降低我们对输出 $S_{\text{dir}}$ 的不确定性（<a href="#methods">方法</a>）。这个极小极大熵问题通常是难以处理的<a class="cite-ref" href="#ref-36">[36]</a><a class="cite-ref" href="#ref-37">[37]</a><a class="cite-ref" href="#ref-38">[38]</a>；但我们提供了一种高效算法，能在每一步贪心地识别局部最优输入（<a href="#methods">方法</a>）。结果是得到一组 $n$ 个输入，通过最小化模型不确定性 $S_{\text{dir}}$，也同时最大化直接依赖关系所能捕捉的变异性 $S_{\text{tot}} - S_{\text{dir}}$。</p>
+
+        <p>考虑小鼠海马体中的一大群神经元<a class="cite-ref" href="#ref-11">[11]</a>（<a href="#methods">方法</a>）。这些细胞在编码动物位置、映射环境特征以及存储过去事件的记忆方面发挥关键作用<a class="cite-ref" href="#ref-39">[39]</a><a class="cite-ref" href="#ref-40">[40]</a><a class="cite-ref" href="#ref-41">[41]</a><a class="cite-ref" href="#ref-42">[42]</a>；然而，这些功能是否源于简单的输入-输出依赖尚不清楚。对于给定的输出神经元，我们推断出最优的 $n$ 个输入以及相应的最大熵模型（<a href="#fig-2">图 2a</a>）。我们只考虑在记录期间与输出至少共激活过一次的输入，这保证了直接依赖关系是良好定义的（<a href="#methods">方法</a>）。</p>
+
+        <p>随着输入数量的增加，最小模型迅速变得具有表达力，对输出活动的预测也越来越准确（<a href="#fig-2">图 2b</a>）。事实上，尽管在输入间的相互作用和时延依赖方面是最大随机的，直接熵 $S_{\text{dir}}$ 仍随输入数量呈指数下降（<a href="#fig-2">图 2c</a>）。这意味着，仅需相对少量的输入，直接依赖关系就能捕捉到指数级大的变异性 $S_{\text{tot}} - S_{\text{dir}}$。</p>
+
+        <figure class="figure" id="fig-2">
+          <img src="https://media.springernature.com/lw1200/springer-static/image/art%3A10.1038%2Fs41567-026-03306-3/MediaObjects/41567_2026_3306_Fig2_HTML.png" alt="图 2：识别一组最小的最优输入。" loading="lazy">
+          <figcaption>
+            <span class="fig-label"><a href="#fig-2">图 2</a></span>
+            识别一组最小的最优输入。<strong>a</strong>，小鼠海马体 $N = 1,485$ 个神经元的记录。对于每个输出神经元，我们选择 $n$ 个最优输入。<strong>b</strong>，模型预测随输入数量急剧改善。<strong>c</strong>，直接熵 $S_{\text{dir}}$ 随 $n$ 呈指数下降，意味着直接依赖关系捕捉了大部分的变异性。
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 跨系统与物种的直接依赖 -->
+      <section id="across-systems">
+        <h2>跨系统与物种的直接依赖</h2>
+        <p>我们对跨越不同脑区和物种的众多神经元重复了这一计算。在所有情况下，我们研究的是具有递归连接的空间连续群体的大型记录，使得每个神经元都可能从其他神经元接收突触输入。</p>
+
+        <p>在海马体记录的 $N = 1,485$ 个神经元中<a class="cite-ref" href="#ref-11">[11]</a><a class="cite-ref" href="#ref-42">[42]</a>（<a href="#fig-2">图 2a</a>），我们确认直接熵 $S_{\text{dir}}$ 随输入数量呈指数下降（<a href="#fig-3">图 3a</a>）。这种下降非常剧烈：对于中位数神经元来说，第一个输入就解释了 17% 的变异性，仅需 15 个输入即可解释 50% 的变异性。当 $n^* = 214$ 个输入时（仅占群体总数的 14%），最大熵模型能正确预测对全部其他神经元的直接依赖关系。这些"完整"模型捕捉了神经元所有的直接依赖关系，解释了神经元 90% 以上的熵 $S_{\text{tot}}$，将变异性中不足 10% 的部分留给高阶依赖、时延依赖和潜在随机性共同解释。</p>
+
+        <p>这些结果在神经系统中和物种间表现出显著的一致性。在小鼠视觉皮层<a class="cite-ref" href="#ref-10">[10]</a>和 <em>C. elegans</em> 的脑中<a class="cite-ref" href="#ref-43">[43]</a>，直接依赖关系同样解释了绝大多数神经元变异性（<a href="#fig-3">图 3b–d</a>）。在所有数据集中，完整模型解释了 90% 或更多的熵，第一个输入解释了 12–24% 的变异性。</p>
+
+        <figure class="figure" id="fig-3">
+          <img src="https://media.springernature.com/lw1200/springer-static/image/art%3A10.1038%2Fs41567-026-03306-3/MediaObjects/41567_2026_3306_Fig3_HTML.png" alt="图 3：少量直接依赖关系解释跨系统与物种的神经元活动。" loading="lazy">
+          <figcaption>
+            <span class="fig-label"><a href="#fig-3">图 3</a></span>
+            少量直接依赖关系解释跨系统与物种的神经元活动。<strong>a</strong>，小鼠海马体（CA1 区，$N = 1,485$）。<strong>b</strong>，小鼠视觉皮层（数据集 1，$N = 1,995$）。<strong>c</strong>，小鼠视觉皮层（数据集 2，$N = 494$）。<strong>d</strong>，<em>C. elegans</em>（全脑，$N = 155$）。在所有系统中，90% 以上的神经元变异性由直接依赖关系解释，熵随输入数量呈指数下降。
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 高阶依赖与时延依赖 -->
+      <section id="higher-order">
+        <h2>高阶依赖与时延依赖</h2>
+        <p>复杂功能需要人工神经元网络<a class="cite-ref" href="#ref-7">[7]</a><a class="cite-ref" href="#ref-34">[34]</a><a class="cite-ref" href="#ref-35">[35]</a>。然而，在真实神经元中，树突与突触外信号之间的相互作用可能导致更高阶的依赖关系，这些关系负责门控功能和线性不可分函数（如 XOR）<a class="cite-ref" href="#ref-44">[44]</a><a class="cite-ref" href="#ref-45">[45]</a><a class="cite-ref" href="#ref-46">[46]</a><a class="cite-ref" href="#ref-47">[47]</a><a class="cite-ref" href="#ref-48">[48]</a><a class="cite-ref" href="#ref-49">[49]</a><a class="cite-ref" href="#ref-50">[50]</a><a class="cite-ref" href="#ref-51">[51]</a><a class="cite-ref" href="#ref-52">[52]</a>（<a href="#fig-1">图 1g</a>）。类似地，神经元可以在时间上整合输入，以执行重要的时间性计算并产生复杂的动力学行为<a class="cite-ref" href="#ref-53">[53]</a><a class="cite-ref" href="#ref-54">[54]</a><a class="cite-ref" href="#ref-55">[55]</a><a class="cite-ref" href="#ref-56">[56]</a>。</p>
+
+        <p>然而，上述结果表明，仅凭对单个输入的直接的、等时的依赖关系知识，就应当能够预测对输入组合的高阶依赖以及对过去输入的时延依赖。如果这一结论成立，它将描绘出一幅惊人简洁的图景：高阶依赖和时延依赖自然地源于直接、瞬时的依赖关系。</p>
+
+        <p>要解释 $k$ 阶依赖 $P(y \mid x_1, \ldots, x_k)$，只需预测输出 $y$ 与 $k$ 个输入的所有子集之间的相关性即可（<a href="#methods">方法</a>）。对于每个二阶依赖 $P(y \mid x_i, x_j)$，由于我们的完整模型捕捉了所有的直接依赖关系（通过拟合或预测），剩下的只是 $y$、$x_i$ 和 $x_j$ 之间的三重相关性。在海马体中，完整模型预测了 99.85% 的三重相关性（在实验误差范围内），仅剩 0.15% 的二阶依赖未被更简单的直接依赖所解释（<a href="#fig-4">图 4a</a>）。</p>
+
+        <p>回到最优输入，随着我们研究更高阶依赖，完整模型的精度进一步提高。直接依赖关系未能预测的四重相关性仅为 0.11%（<a href="#fig-4">图 4b</a>），这一比例对于五重相关性降至 0.08%（<a href="#fig-4">图 4c</a>）。小鼠海马体中的这些结果在小鼠皮层和 <em>C. elegans</em> 中得到了复现（<a href="#fig-4">图 4d–g</a>）。因此，我们发现绝大多数的更高阶依赖可以被理解为源于简单的直接依赖关系，而不需要输入之间的相互作用。</p>
+
+        <figure class="figure" id="fig-4">
+          <img src="https://media.springernature.com/lw1200/springer-static/image/art%3A10.1038%2Fs41567-026-03306-3/MediaObjects/41567_2026_3306_Fig4_HTML.png" alt="图 4：预测高阶与时间延迟相关性。" loading="lazy">
+          <figcaption>
+            <span class="fig-label"><a href="#fig-4">图 4</a></span>
+            预测高阶与时间延迟相关性。<strong>a</strong>，二阶依赖：完整模型预测了 99.85% 的三重相关性。<strong>b</strong>，四重相关性：仅 0.11% 未被解释。<strong>c</strong>，五重相关性：仅 0.08% 未被解释。<strong>d–g</strong>，在小鼠皮层和 <em>C. elegans</em> 中保持一致。
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 消融鲁棒性 -->
+      <section id="ablation">
+        <h2>消融鲁棒性</h2>
+        <p>由于推断出的神经网络高度稀疏，随机移除一个输入对预测输出的影响很小。我们的消融实验表明，网络对输入的随机移除具有鲁棒性：即使消融 50% 的输入，模型熵也仅略有增加（<a href="#fig-5">图 5</a>）。这一结果表明神经编码具有高度冗余性——每个输出神经元不依赖任何单个输入，而是依赖于一组分布式的输入，从而对单个神经元的丢失具有鲁棒性。</p>
+
+        <figure class="figure" id="fig-5">
+          <img src="https://media.springernature.com/lw1200/springer-static/image/art%3A10.1038%2Fs41567-026-03306-3/MediaObjects/41567_2026_3306_Fig5_HTML.png" alt="图 5：消融鲁棒性。" loading="lazy">
+          <figcaption>
+            <span class="fig-label"><a href="#fig-5">图 5</a></span>
+            推断神经网络的消融鲁棒性。神经编码具有高度冗余性；即使移除很大比例的输入，模型仍能保持大部分预测准确度。
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- 讨论 -->
+      <section id="discussion">
+        <h2>讨论</h2>
+        <p>尽管神经元具有复杂的形态和生物物理动力学<a class="cite-ref" href="#ref-17">[17]</a><a class="cite-ref" href="#ref-18">[18]</a><a class="cite-ref" href="#ref-19">[19]</a><a class="cite-ref" href="#ref-44">[44]</a><a class="cite-ref" href="#ref-45">[45]</a><a class="cite-ref" href="#ref-46">[46]</a><a class="cite-ref" href="#ref-47">[47]</a><a class="cite-ref" href="#ref-48">[48]</a><a class="cite-ref" href="#ref-49">[49]</a><a class="cite-ref" href="#ref-51">[51]</a><a class="cite-ref" href="#ref-52">[52]</a>，长期以来学者们一直使用简单依赖模型来研究神经元<a class="cite-ref" href="#ref-4">[4]</a><a class="cite-ref" href="#ref-5">[5]</a><a class="cite-ref" href="#ref-6">[6]</a><a class="cite-ref" href="#ref-7">[7]</a><a class="cite-ref" href="#ref-9">[9]</a><a class="cite-ref" href="#ref-34">[34]</a>。在本文中，我们开发了一个框架来研究神经元活动是否源于最简单的依赖关系：那些捕捉对单个输入响应、但不包含输入之间相互作用信息的依赖关系。</p>
+
+        <p>在小鼠海马体和视觉皮层中<a class="cite-ref" href="#ref-10">[10]</a><a class="cite-ref" href="#ref-11">[11]</a><a class="cite-ref" href="#ref-42">[42]</a>，这些直接依赖关系解释了超过 90% 的神经元活动变异性（<a href="#fig-3">图 3</a>），仅将不足 10% 留给输入间的相互作用、时延依赖和潜在变量（<a href="#fig-1">图 1</a>）。此外，推断出的模型——等价于人工神经元——能够预测对输入组合的高阶依赖和对过去输入的时延依赖（<a href="#fig-4">图 4</a>）。这些结果表明，尽管神经系统的复杂性极高，大多数神经元可以用简单的人工模型进行定量描述。</p>
+
+        <p>这些模型的简洁性对神经科学和机器学习都具有重要意义。直接依赖关系捕捉了大部分变异性这一发现，支持了在神经数据分析中使用逻辑回归和广义线性模型。此外，我们的贪心算法提供了一种实用方法，用于识别解释每个神经元活动的最小突触集，为设计具有稀疏连接的高效神经网络提供了参考。</p>
+      </section>
+
+      <!-- 方法 -->
+      <section id="methods">
+        <h2>方法</h2>
+
+        <h3>最大熵模型</h3>
+        <p>考虑一个二元输出 $y \in \{0, 1\}$ 和一组 $n$ 个二元输入 $\mathbf{x} = \{x_1, \ldots, x_n\} \in \{0, 1\}^n$。实验中我们获得 $L$ 个活动样本 $y^{(\ell)}$ 和 $\mathbf{x}^{(\ell)}$，其中 $\ell = 1, \ldots, L$。从这些数据中，我们可以估计对所有输入 $i = 1, \ldots, n$ 的直接依赖关系 $P(y \mid x_i)$。</p>
+
+        <p>我们希望推导出与这些直接依赖关系一致且具有最大熵的模型 $P(y \mid \mathbf{x})$</p>
+
+        <div class="math-block" id="eq-2">
+          $$S(P) = -\left\langle \sum_y P(y \mid \mathbf{x}) \log P(y \mid \mathbf{x}) \right\rangle_{\mathbf{x}}, \tag{2}$$
+        </div>
+
+        <p>其中 $\langle f(\mathbf{x}) \rangle_{\mathbf{x}} = \frac{1}{L} \sum_\ell f(\mathbf{x}^{(\ell)})$ 表示对输入的经验平均，（除非特别说明）我们使用以 2 为底的对数，使得熵以比特为单位<a class="cite-ref" href="#ref-20">[20]</a><a class="cite-ref" href="#ref-21">[21]</a>。</p>
+
+        <p>每个直接依赖关系 $P(y \mid x_i)$ 由平均值 $\langle y \rangle = \frac{1}{L} \sum_\ell y^{(\ell)}$、$\langle x_i \rangle = \frac{1}{L} \sum_\ell x_i^{(\ell)}$ 以及成对相关性 $\langle y x_i \rangle = \frac{1}{L} \sum_\ell y^{(\ell)} x_i^{(\ell)}$ 唯一确定。对于每个模型 $P(y \mid \mathbf{x})$，我们有 $\langle x_i \rangle_P = \langle x_i \rangle$，其中 $\langle f(y, \mathbf{x}) \rangle_P = \langle \sum_y f(y, \mathbf{x}) P(y \mid \mathbf{x}) \rangle_{\mathbf{x}}$ 表示模型平均。因此，只需约束平均放电率 $\langle y \rangle$ 和所有输入的 $\langle y x_i \rangle$ 相关性即可。</p>
+
+        <p>已知此最大熵模型具有逻辑斯谛形式</p>
+
+        <div class="math-block" id="eq-3">
+          $$P(y \mid \mathbf{x}) = \frac{1}{Z(\mathbf{x})} e^{y\left(b + \sum_i w_i x_i\right)}, \tag{3}$$
+        </div>
+
+        <p>其中 $Z(\mathbf{x}) = 1 + e^{b + \sum_i w_i x_i}$ 确保归一化<a class="cite-ref" href="#ref-22">[22]</a><a class="cite-ref" href="#ref-23">[23]</a>。偏置 $b$ 和权重 $w_i$ 是拉格朗日乘子，强制满足约束 $\langle y \rangle_P = \langle y \rangle$ 和 $\langle y x_i \rangle_P = \langle y x_i \rangle$。如上所述，这些最大熵模型等价于逻辑斯谛模型，后者是广义线性模型的一个特例，已为神经动力学提供了重要见解<a class="cite-ref" href="#ref-24">[24]</a><a class="cite-ref" href="#ref-25">[25]</a><a class="cite-ref" href="#ref-26">[26]</a><a class="cite-ref" href="#ref-27">[27]</a><a class="cite-ref" href="#ref-28">[28]</a><a class="cite-ref" href="#ref-29">[29]</a><a class="cite-ref" href="#ref-30">[30]</a><a class="cite-ref" href="#ref-31">[31]</a>。</p>
+
+        <h3>计算模型参数</h3>
+        <p>为计算出偏置 $b$ 和权重 $w_i$，使模型匹配实验平均值 $\langle y \rangle$ 和所有输入 $i$ 的相关性 $\langle y x_i \rangle$，我们最小化模型与经验分布 $Q(y \mid \mathbf{x})$ 之间的 Kullback–Leibler（KL）散度 $D_{\text{KL}}(Q \parallel P)$，这等价于极大似然估计<a class="cite-ref" href="#ref-21">[21]</a>。具体而言，我们执行 KL 散度上的梯度下降，梯度为 $\nabla_b D_{\text{KL}}(Q \parallel P) = \langle y \rangle_P - \langle y \rangle$ 和 $\nabla_{w_i} D_{\text{KL}}(Q \parallel P) = \langle y x_i \rangle_P - \langle y x_i \rangle$。该算法即使对于非常大的 $n$ 也能高效收敛。</p>
+
+        <h3>直接依赖中的信息</h3>
+        <p>神经元的真实熵 $S_{\text{true}}$ 定义了无法通过对输入依赖关系解释的潜在变异性；然而，除非输入数量 $n$ 很小，否则 $S_{\text{true}}$ 无法直接从数据中估计。在不知晓任何输入的情况下，神经元的总变异性由边缘分布 $P(y)$ 的熵 $S_{\text{tot}}$ 定义（参考文献 <a class="cite-ref" href="#ref-32">[32]</a>）。在这两个极端之间，仅知晓直接依赖关系 $P(y \mid x_i)$ 时，最大熵模型（<a href="#eq-3">方程 (3)</a>）的熵（以奈特为单位）为</p>
+
+        <div class="math-block" id="eq-4">
+          $$S_{\text{dir}} = \langle \log Z(\mathbf{x}) \rangle_{\mathbf{x}} - b \langle y \rangle - \sum_i w_i \langle y x_i \rangle. \tag{4}$$
+        </div>
+
+        <p>这些熵构成了一个层级结构 $S_{\text{tot}} \geq S_{\text{dir}} \geq S_{\text{true}} \geq 0$。差值 $I_{\text{true}} = S_{\text{tot}} - S_{\text{true}}$ 是输入与输出之间的真实互信息<a class="cite-ref" href="#ref-21">[21]</a>。差值 $I_{\text{dir}} = S_{\text{tot}} - S_{\text{dir}}$ 是 $I_{\text{true}}$ 的下界，也是模型（<a href="#eq-1">方程 (1)</a>）中输入与输出之间的互信息。最后，由于模型的最大熵形式，与真实放电概率 $P_{\text{true}}(y \mid \mathbf{x})$ 的 KL 散度也简化为熵的差值 $D_{\text{KL}}(P_{\text{true}} \parallel P) = S_{\text{dir}} - S_{\text{true}}$（参考文献 <a class="cite-ref" href="#ref-21">[21]</a>）。</p>
+
+        <p>因此，当模型熵 $S_{\text{dir}}$ 变得很小时，$D_{\text{KL}}(P_{\text{true}} \parallel P)$ 也会变得很小，模型是精确的。此外，在这一极限下，输出成为输入的确定性函数 $P(y=1 \mid \mathbf{x}) = \Theta(b + \sum_i w_i x_i)$，其中 $\Theta(\cdot)$ 是阶跃函数。综合这些观察可知，如果 $S_{\text{dir}}$ 很小，则 $S_{\text{dir}} \approx S_{\text{true}} \approx 0$，神经元本身等价于 McCulloch–Pitts 神经元或感知机<a class="cite-ref" href="#ref-4">[4]</a><a class="cite-ref" href="#ref-7">[7]</a><a class="cite-ref" href="#ref-34">[34]</a>。</p>
+
+        <h3>最优输入</h3>
+        <p>对于给定的输出神经元，我们寻找能产生最精确模型（<a href="#eq-1">方程 (1)</a>）的 $n$ 个输入。如上所述，模型与真实放电概率之间的 KL 散度简化为熵的差值 $D_{\text{KL}}(P_{\text{true}} \parallel P) = S_{\text{dir}} - S_{\text{true}}$。因此，能够对输出做出最准确预测的最优输入，就是使最大熵模型 $P(y \mid \mathbf{x})$ 具有最小熵 $S_{\text{dir}}$ 的那些输入。这是极小极大熵原理的一个实例，该原理为选择最大熵模型中的最优约束提供了一般性策略<a class="cite-ref" href="#ref-36">[36]</a><a class="cite-ref" href="#ref-37">[37]</a><a class="cite-ref" href="#ref-38">[38]</a>。</p>
+
+        <h3>贪心算法</h3>
+        <p>在 $N-1$ 个可能的输入中搜索最优的 $n$ 个输入通常是不可行的。因此，我们提出一种贪心算法，用于逐步增长一个局部最优的输入集。我们从没有输入的独立模型 $P(y)$ 开始。然后对 $N-1$ 个可能的输入分别拟合模型 $P(y \mid x_i)$；其中产生最小熵 $S_{\text{dir}}$ 的输入即为最优输入。重复这一过程，我们在每一步贪心地选择最优输入（即使熵 $S_{\text{dir}}$ 最小的输入），直到达到所需的输入数量 $n$。</p>
+
+        <h3>熵的近似变化</h3>
+        <p>上述算法需要拟合 $O(nN)$ 个独立模型：在 $n$ 步的每一步中，对 $O(N)$ 个可能的候选输入各拟合一个。为提高效率，我们不必为每个可能的输入都拟合模型，而是可以解析地近似熵的下降 $\Delta S_{\text{dir}}$。利用微扰理论，对于候选神经元 $i$，我们在预测误差 $\langle y x_i \rangle - \langle y x_i \rangle_P$ 很小的极限下展开熵的变化，得到 $\Delta S_{\text{dir}}$ 的解析近似（补充信息）。使用该近似在每一步选择最优输入，贪心算法只需拟合 $O(n)$ 个模型。</p>
+
+        <h3>神经数据</h3>
+        <p>我们的框架可用于研究不同神经系统和物种中的任何二值化神经元活动记录。由于我们关心的是理解从输入到输出的映射，我们重点关注空间连续群体的大型记录——对于这类记录中的每个神经元，我们可以获取其部分或大部分输入。这类记录通过钙成像得以实现：动物经过基因改造，其神经元会响应钙浓度的变化而发出荧光，而钙浓度又紧随细胞的电活动而变化。</p>
+
+        <p>我们研究了先前实验中测量的四个神经元活动记录：一个在小鼠海马体（CA1 区 $N = 1,485$ 个神经元，扫描周期 $\Delta t = 1/30$ 秒）<a class="cite-ref" href="#ref-11">[11]</a>，两个在小鼠视觉皮层<a class="cite-ref" href="#ref-10">[10]</a>，一个在 <em>C. elegans</em> 的脑中<a class="cite-ref" href="#ref-43">[43]</a>。在所有情况下，活动都使用采样周期 $\Delta t$ 在可用的最快时间尺度上进行二值化。</p>
+
+        <!-- 数据与代码可用性 -->
+        <div class="data-box">
+          <strong>数据可用性</strong>
+          本文分析的数据可通过 GitHub 公开获取：<a href="https://github.com/ChrisWLynn/Minimal_computation" target="_blank">https://github.com/ChrisWLynn/Minimal_computation</a>。
+        </div>
+
+        <div class="data-box">
+          <strong>代码可用性</strong>
+          本文用于执行分析的代码可通过 GitHub 公开获取：<a href="https://github.com/ChrisWLynn/Minimal_computation" target="_blank">https://github.com/ChrisWLynn/Minimal_computation</a>。
+        </div>
+      </section>
+
+      <!-- 致谢 -->
+      <section id="acknowledgements">
+        <h2>致谢</h2>
+        <p>感谢 P. Dixit、B. Machta、D. Clark、T. Geiller、M. Leighton、F. Mignacco、D. Carcamo、N. Weaver 和 Q. Yu 富有启发性的讨论以及对本文早期版本的评论。我们也感谢美国国立卫生研究院（NIH/NIGMS R35GM160188）以及耶鲁大学物理系、定量生物学研究所和吴蔡研究所的支持。</p>
+      </section>
+
+      <!-- 作者信息 -->
+      <section id="author-info">
+        <h2>作者信息</h2>
+        <p><strong>作者与单位</strong></p>
+        <p>Christopher W. Lynn — 耶鲁大学物理系，美国康涅狄格州纽黑文；耶鲁大学定量生物学研究所；耶鲁大学吴蔡研究所。</p>
+        <p><strong>作者贡献</strong> — C.W.L. 构思了该项目，设计了模型，执行了分析，并撰写了论文及补充信息。</p>
+        <p><strong>通讯作者</strong> — 请联系 Christopher W. Lynn。</p>
+        <p><strong>利益冲突</strong> — 作者声明不存在竞争性利益。</p>
+      </section>
+
+      <!-- 参考文献 -->
+      <section class="references-section" id="references">
+        <h2>参考文献</h2>
+        <ol>
+          <li id="ref-1">White, J. G., Southgate, E., Thomson, J. N., Brenner, S. et al. The structure of the nervous system of the nematode <em>Caenorhabditis elegans</em>. <em>Philos. Trans. R. Soc. Lond. B</em> <strong>314</strong>, 1–340 (1986).</li>
+          <li id="ref-2">Lin, A. et al. Network statistics of the whole-brain connectome of <em>Drosophila</em>. <em>Nature</em> <strong>634</strong>, 153–165 (2024).</li>
+          <li id="ref-3">Loomba, S. et al. Connectomic comparison of mouse and human cortex. <em>Science</em> <strong>377</strong>, eabo0924 (2022).</li>
+          <li id="ref-4">McCulloch, W. S. &amp; Pitts, W. A logical calculus of the ideas immanent in nervous activity. <em>Bull. Math. Biophys.</em> <strong>5</strong>, 115–133 (1943).</li>
+          <li id="ref-5">Rosenblatt, F. The perceptron: a probabilistic model for information storage and organization in the brain. <em>Psychol. Rev.</em> <strong>65</strong>, 386–408 (1958).</li>
+          <li id="ref-6">Minsky, M. &amp; Papert, S. <em>Perceptrons: An Introduction to Computational Geometry</em> (MIT Press, 1969).</li>
+          <li id="ref-7">Hertz, J., Krogh, A. &amp; Palmer, R. G. <em>Introduction to the Theory of Neural Computation</em> (Addison-Wesley, 1991).</li>
+          <li id="ref-8">Hopfield, J. J. Neural networks and physical systems with emergent collective computational abilities. <em>Proc. Natl Acad. Sci. USA</em> <strong>79</strong>, 2554–2558 (1982).</li>
+          <li id="ref-9">Dayan, P. &amp; Abbott, L. F. <em>Theoretical Neuroscience</em> (MIT Press, 2001).</li>
+          <li id="ref-10">de Vries, S. E. J. et al. A large-scale standardized physiological survey reveals functional organization of the mouse visual cortex. <em>Nat. Neurosci.</em> <strong>23</strong>, 138–151 (2020).</li>
+          <li id="ref-11">Petersen, T. et al. Large-scale recording of neuronal activity in the mouse hippocampus during virtual navigation. <em>Nature</em> (2021).</li>
+          <li id="ref-12">Ahrens, M. B., Orger, M. B., Robson, D. N., Li, J. M. &amp; Keller, P. J. Whole-brain functional imaging at cellular resolution using light-sheet microscopy. <em>Nat. Methods</em> <strong>10</strong>, 413–420 (2013).</li>
+          <li id="ref-13">Vogelstein, J. T. et al. Fast nonnegative deconvolution for spike train inference from population calcium imaging. <em>J. Neurophysiol.</em> <strong>104</strong>, 3691–3704 (2010).</li>
+          <li id="ref-14">Pnevmatikakis, E. A. et al. Simultaneous denoising, deconvolution, and demixing of calcium imaging data. <em>Neuron</em> <strong>89</strong>, 285–299 (2016).</li>
+          <li id="ref-15">Hodgkin, A. L. &amp; Huxley, A. F. A quantitative description of membrane current and its application to conduction and excitation in nerve. <em>J. Physiol.</em> <strong>117</strong>, 500–544 (1952).</li>
+          <li id="ref-16">Kandel, E. R., Schwartz, J. H., Jessell, T. M., Siegelbaum, S. A. &amp; Hudspeth, A. J. <em>Principles of Neural Science</em> 5th edn (McGraw-Hill, 2013).</li>
+          <li id="ref-17">London, M. &amp; Häusser, M. Dendritic computation. <em>Annu. Rev. Neurosci.</em> <strong>28</strong>, 503–532 (2005).</li>
+          <li id="ref-18">Spruston, N. Pyramidal neurons: dendritic structure and synaptic integration. <em>Nat. Rev. Neurosci.</em> <strong>9</strong>, 206–221 (2008).</li>
+          <li id="ref-19">Stuart, G., Spruston, N. &amp; Häusser, M. (eds) <em>Dendrites</em> 3rd edn (Oxford Univ. Press, 2016).</li>
+          <li id="ref-20">Jaynes, E. T. Information theory and statistical mechanics. <em>Phys. Rev.</em> <strong>106</strong>, 620–630 (1957).</li>
+          <li id="ref-21">Cover, T. M. &amp; Thomas, J. A. <em>Elements of Information Theory</em> 2nd edn (Wiley, 2006).</li>
+          <li id="ref-22">Schneidman, E., Berry, M. J., Segev, R. &amp; Bialek, W. Weak pairwise correlations imply strongly correlated network states in a neural population. <em>Nature</em> <strong>440</strong>, 1007–1012 (2006).</li>
+          <li id="ref-23">Tkačik, G. et al. Searching for collective behavior in a large network of sensory neurons. <em>PLoS Comput. Biol.</em> <strong>10</strong>, e1003408 (2014).</li>
+          <li id="ref-24">Nelder, J. A. &amp; Wedderburn, R. W. M. Generalized linear models. <em>J. R. Stat. Soc. A</em> <strong>135</strong>, 370–384 (1972).</li>
+          <li id="ref-25">Paninski, L. Maximum likelihood estimation of cascade point-process neural encoding models. <em>Network: Comput. Neural Syst.</em> <strong>15</strong>, 243–262 (2004).</li>
+          <li id="ref-26">Truccolo, W., Eden, U. T., Fellows, M. R., Donoghue, J. P. &amp; Brown, E. N. A point process framework for relating neural spiking activity to spiking history, neural ensemble, and extrinsic covariate effects. <em>J. Neurophysiol.</em> <strong>93</strong>, 1074–1089 (2005).</li>
+          <li id="ref-27">Pillow, J. W. et al. Spatio-temporal correlations and visual signalling in a complete neuronal population. <em>Nature</em> <strong>454</strong>, 995–999 (2008).</li>
+          <li id="ref-28">Brillinger, D. R. Maximum likelihood analysis of spike trains. In <em>Neurophysiology and Neuroinformatics</em> (2002).</li>
+          <li id="ref-29">Weber, A. I. &amp; Pillow, J. W. Capturing the dynamical repertoire of single neurons with generalized linear models. <em>Neural Comput.</em> <strong>29</strong>, 3260–3295 (2017).</li>
+          <li id="ref-30">Ladenbauer, J., McKenzie, S., English, D. F., Hagens, O. &amp; Ostojic, S. Inferring network connectivity from population neural dynamics. <em>PLoS Comput. Biol.</em> <strong>18</strong>, e1010630 (2022).</li>
+          <li id="ref-31">Macke, J. H. et al. Neural population coding in the face of temporal correlations. <em>Neuron</em> <strong>68</strong>, 939–953 (2010).</li>
+          <li id="ref-32">Shannon, C. E. A mathematical theory of communication. <em>Bell Syst. Tech. J.</em> <strong>27</strong>, 379–423 (1948).</li>
+          <li id="ref-33">MacKay, D. J. C. <em>Information Theory, Inference, and Learning Algorithms</em> (Cambridge Univ. Press, 2003).</li>
+          <li id="ref-34">Rosenblatt, F. <em>Principles of Neurodynamics: Perceptrons and the Theory of Brain Mechanisms</em> (Spartan Books, 1962).</li>
+          <li id="ref-35">Cybenko, G. Approximation by superpositions of a sigmoidal function. <em>Math. Control Signals Syst.</em> <strong>2</strong>, 303–314 (1989).</li>
+          <li id="ref-36">Jaynes, E. T. <em>Probability Theory: The Logic of Science</em> (Cambridge Univ. Press, 2003).</li>
+          <li id="ref-37">Zhu, S. C., Wu, Y. &amp; Mumford, D. Minimax entropy principle and its application to texture modeling. <em>Neural Comput.</em> <strong>9</strong>, 1627–1660 (1997).</li>
+          <li id="ref-38">Bialek, W. &amp; Ranganathan, R. Rediscovering the power of pairwise interactions. <em>arXiv preprint</em> arXiv:0712.1237 (2007).</li>
+          <li id="ref-39">O'Keefe, J. &amp; Dostrovsky, J. The hippocampus as a spatial map. Preliminary evidence from unit activity in the freely-moving rat. <em>Brain Res.</em> <strong>34</strong>, 171–175 (1971).</li>
+          <li id="ref-40">Moser, E. I., Kropff, E. &amp; Moser, M.-B. Place cells, grid cells, and the brain's spatial representation system. <em>Annu. Rev. Neurosci.</em> <strong>31</strong>, 69–89 (2008).</li>
+          <li id="ref-41">Buzsáki, G. &amp; Moser, E. I. Memory, navigation and theta rhythm in the hippocampal-entorhinal system. <em>Nat. Neurosci.</em> <strong>16</strong>, 130–138 (2013).</li>
+          <li id="ref-42">Grosmark, A. D. &amp; Buzsáki, G. Diversity in neural firing dynamics supports both rigid and learned hippocampal sequences. <em>Science</em> <strong>351</strong>, 1440–1443 (2016).</li>
+          <li id="ref-43">Kato, S. et al. Global brain dynamics of the <em>C. elegans</em> brain during spontaneous and evoked activity. <em>Cell</em> <strong>163</strong>, 656–669 (2015).</li>
+          <li id="ref-44">Koch, C. &amp; Poggio, T. Multiplying with synapses and neurons. In <em>Single Neuron Computation</em> (1992).</li>
+          <li id="ref-45">Mel, B. W. NMDA-based pattern discrimination in a modeled cortical neuron. <em>Neural Comput.</em> <strong>4</strong>, 502–517 (1992).</li>
+          <li id="ref-46">Poirazi, P., Brannon, T. &amp; Mel, B. W. Pyramidal neuron as two-layer neural network. <em>Neuron</em> <strong>37</strong>, 989–999 (2003).</li>
+          <li id="ref-47">Polsky, A., Mel, B. W. &amp; Schiller, J. Computational subunits in thin dendrites of pyramidal cells. <em>Nat. Neurosci.</em> <strong>7</strong>, 621–627 (2004).</li>
+          <li id="ref-48">Poirazi, P. &amp; Mel, B. W. Impact of active dendrites on neural computation. <em>Curr. Opin. Neurobiol.</em> <strong>11</strong>, 431–437 (2001).</li>
+          <li id="ref-49">Silver, R. A. Neuronal arithmetic. <em>Nat. Rev. Neurosci.</em> <strong>11</strong>, 474–489 (2010).</li>
+          <li id="ref-50">Rall, W. &amp; Shepherd, G. M. Theoretical reconstruction of field potentials and dendrodendritic synaptic interactions in olfactory bulb. <em>J. Neurophysiol.</em> <strong>31</strong>, 884–915 (1968).</li>
+          <li id="ref-51">Segev, I. &amp; Rall, W. Excitable dendrites and spines: earlier theoretical insights elucidate recent direct observations. <em>Trends Neurosci.</em> <strong>21</strong>, 453–460 (1998).</li>
+          <li id="ref-52">Major, G., Larkum, M. E. &amp; Schiller, J. Active properties of neocortical pyramidal neuron dendrites. <em>Annu. Rev. Neurosci.</em> <strong>36</strong>, 1–24 (2013).</li>
+          <li id="ref-53">Buonomano, D. V. &amp; Maass, W. State-dependent computations: spatiotemporal processing in cortical networks. <em>Nat. Rev. Neurosci.</em> <strong>10</strong>, 113–125 (2009).</li>
+          <li id="ref-54">Klampfl, S. &amp; Maass, W. Emergence of dynamic memory traces in cortical microcircuit models through STDP. <em>J. Neurosci.</em> <strong>33</strong>, 11515–11529 (2013).</li>
+          <li id="ref-55">Ostojic, S. &amp; Fusi, S. Computational role of temporal integration in neural dynamics. <em>Neuron</em> <strong>112</strong>, 1279–1295 (2024).</li>
+          <li id="ref-56">König, P., Engel, A. K. &amp; Singer, W. Integrator or coincidence detector? The role of the cortical neuron revisited. <em>Trends Neurosci.</em> <strong>19</strong>, 130–137 (1996).</li>
+        </ol>
+      </section>
+
+    </div><!-- /paper-body -->
+  </main>
+</div><!-- /page-wrapper -->
+
+<!-- SETTINGS PANEL -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+<aside class="settings-panel" id="settingsPanel">
+  <div class="panel-header">
+    <h3>阅读设置</h3>
+    <button class="close-btn" id="settingsClose" type="button">&times;</button>
+  </div>
+
+  <!-- Typography -->
+  <div class="section">
+    <div class="section-title">字体 Typography</div>
+    <div class="field">
+      <label for="headingFont">标题字体</label>
+      <select id="headingFont">
+        <option value="'Inter','Noto Sans SC','PingFang SC',sans-serif">Inter / Sans CN</option>
+        <option value="'Noto Serif SC','Source Serif 4','Songti SC',Georgia,serif">Serif CN</option>
+        <option value="Georgia,'Source Serif 4',serif">Georgia</option>
+        <option value="'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif">黑体 Sans</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="bodyFont">正文字体</label>
+      <select id="bodyFont">
+        <option value="'Source Serif 4','Noto Serif SC','Songti SC',Georgia,serif">Source Serif / 宋体</option>
+        <option value="'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif">Sans CN / 黑体</option>
+        <option value="Georgia,'Noto Serif SC',serif">Georgia</option>
+        <option value="'Inter','Noto Sans SC','Segoe UI',sans-serif">Inter / Sans</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="fontSize">字体大小</label>
+      <input type="range" id="fontSize" min="14" max="24" step="1" value="17">
+      <span class="val" id="fontSizeVal">17px</span>
+    </div>
+  </div>
+
+  <!-- Spacing -->
+  <div class="section">
+    <div class="section-title">间距 Spacing</div>
+    <div class="field">
+      <label for="lineHeight">行间距</label>
+      <input type="range" id="lineHeight" min="1.3" max="2.5" step="0.05" value="1.8">
+      <span class="val" id="lineHeightVal">1.80</span>
+    </div>
+    <div class="field">
+      <label for="paraSpacing">段落间距</label>
+      <input type="range" id="paraSpacing" min="0.3" max="2.5" step="0.1" value="1.2">
+      <span class="val" id="paraSpacingVal">1.2em</span>
+    </div>
+    <div class="field">
+      <label for="indentToggle">段首缩进</label>
+      <label class="switch"><input type="checkbox" id="indentToggle"><span class="slider"></span></label>
+    </div>
+    <div class="field">
+      <label for="justifyToggle">两端对齐</label>
+      <label class="switch"><input type="checkbox" id="justifyToggle"><span class="slider"></span></label>
+    </div>
+  </div>
+
+  <!-- Layout -->
+  <div class="section">
+    <div class="section-title">布局 Layout</div>
+    <div class="field">
+      <label for="contentWidth">正文宽度</label>
+      <input type="range" id="contentWidth" min="600" max="1100" step="20" value="780">
+      <span class="val" id="contentWidthVal">780px</span>
+    </div>
+    <div class="field">
+      <label for="boundaryToggle">正文边界线</label>
+      <label class="switch"><input type="checkbox" id="boundaryToggle"><span class="slider"></span></label>
+    </div>
+    <div class="field">
+      <label for="tocToggle">显示目录</label>
+      <label class="switch"><input type="checkbox" id="tocToggle" checked><span class="slider"></span></label>
+    </div>
+    <div class="field">
+      <label for="tocWidth">目录宽度</label>
+      <input type="range" id="tocWidth" min="180" max="360" step="10" value="240">
+      <span class="val" id="tocWidthVal">240px</span>
+    </div>
+  </div>
+
+  <!-- Day Colors -->
+  <div class="section">
+    <div class="section-title">日间配色 Day Colors</div>
+    <div class="field">
+      <label>主题色</label>
+      <div class="color-field">
+        <input type="color" id="dayThemeColor" value="#286983">
+        <span class="val" id="dayThemeColorVal">#286983</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>字体色</label>
+      <div class="color-field">
+        <input type="color" id="dayTextColor" value="#575279">
+        <span class="val" id="dayTextColorVal">#575279</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>背景色</label>
+      <div class="color-field">
+        <input type="color" id="dayBgColor" value="#faf4ed">
+        <span class="val" id="dayBgColorVal">#faf4ed</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Night Colors -->
+  <div class="section">
+    <div class="section-title">夜间配色 Night Colors</div>
+    <div class="field">
+      <label>主题色</label>
+      <div class="color-field">
+        <input type="color" id="nightThemeColor" value="#9ccfd8">
+        <span class="val" id="nightThemeColorVal">#9ccfd8</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>字体色</label>
+      <div class="color-field">
+        <input type="color" id="nightTextColor" value="#e0def4">
+        <span class="val" id="nightTextColorVal">#e0def4</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>背景色</label>
+      <div class="color-field">
+        <input type="color" id="nightBgColor" value="#191724">
+        <span class="val" id="nightBgColorVal">#191724</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const KEY = 'nature-reader-prefs';
+
+  function save(prefs) { try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch(e){} }
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ return {}; } }
+
+  const prefs = load();
+
+  // Theme toggle
+  const themeBtn = document.getElementById('themeToggle');
+  function applyTheme(theme) {
+    root.setAttribute('data-theme', theme);
+    applyColors(theme);
+    prefs.theme = theme;
+    save(prefs);
+  }
+  applyTheme(prefs.theme || 'day');
+  themeBtn.addEventListener('click', () => {
+    applyTheme(root.getAttribute('data-theme') === 'day' ? 'night' : 'day');
+  });
+
+  // Settings panel
+  const panel = document.getElementById('settingsPanel');
+  const overlay = document.getElementById('settingsOverlay');
+  const openBtn = document.getElementById('settingsToggle');
+  const closeBtn = document.getElementById('settingsClose');
+
+  function openPanel() { panel.classList.add('open'); overlay.classList.add('open'); }
+  function closePanel() { panel.classList.remove('open'); overlay.classList.remove('open'); }
+  openBtn.addEventListener('click', openPanel);
+  closeBtn.addEventListener('click', closePanel);
+  overlay.addEventListener('click', closePanel);
+
+  // Back to top
+  document.getElementById('topBtn').addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Range controls
+  function bindRange(id, cssVar, unit, formatter) {
+    const input = document.getElementById(id);
+    const valEl = document.getElementById(id + 'Val');
+    if (!input || !valEl) return;
+    if (prefs[id] !== undefined) input.value = prefs[id];
+    const apply = () => {
+      const v = input.value;
+      root.style.setProperty(cssVar, v + unit);
+      valEl.textContent = (formatter ? formatter(v) : v) + unit;
+      prefs[id] = v; save(prefs);
+    };
+    input.addEventListener('input', apply);
+    apply();
+  }
+
+  bindRange('fontSize', '--font-size', 'px');
+  bindRange('lineHeight', '--line-height', '', v => Number(v).toFixed(2));
+  bindRange('paraSpacing', '--para-spacing', 'em', v => Number(v).toFixed(1));
+  bindRange('contentWidth', '--content-width', 'px');
+  bindRange('tocWidth', '--toc-width', 'px');
+
+  // Select controls
+  function bindSelect(id, cssVar) {
+    const input = document.getElementById(id);
+    if (!input) return;
+    if (prefs[id]) input.value = prefs[id];
+    const apply = () => {
+      root.style.setProperty(cssVar, input.value);
+      prefs[id] = input.value; save(prefs);
+    };
+    input.addEventListener('change', apply);
+    apply();
+  }
+
+  bindSelect('headingFont', '--heading-font');
+  bindSelect('bodyFont', '--body-font');
+
+  // Toggle controls
+  function bindToggle(id, onChange) {
+    const input = document.getElementById(id);
+    if (!input) return;
+    if (typeof prefs[id] === 'boolean') input.checked = prefs[id];
+    const apply = () => { onChange(input.checked); prefs[id] = input.checked; save(prefs); };
+    input.addEventListener('change', apply);
+    apply();
+  }
+
+  bindToggle('indentToggle', checked => {
+    root.style.setProperty('--indent', checked ? '2em' : '0em');
+  });
+  bindToggle('justifyToggle', checked => {
+    root.style.setProperty('--text-align', checked ? 'justify' : 'left');
+  });
+  bindToggle('boundaryToggle', checked => {
+    root.style.setProperty('--boundary', checked ? 'var(--hl-med)' : 'transparent');
+  });
+  bindToggle('tocToggle', checked => {
+    document.getElementById('pageWrapper').classList.toggle('no-toc', !checked);
+  });
+
+  // Color pickers
+  function bindColor(id) {
+    const input = document.getElementById(id);
+    const valEl = document.getElementById(id + 'Val');
+    if (!input || !valEl) return;
+    if (prefs[id]) { input.value = prefs[id]; }
+    const apply = () => {
+      valEl.textContent = input.value;
+      prefs[id] = input.value; save(prefs);
+      applyColors(root.getAttribute('data-theme'));
+    };
+    input.addEventListener('input', apply);
+  }
+
+  bindColor('dayThemeColor');
+  bindColor('dayTextColor');
+  bindColor('dayBgColor');
+  bindColor('nightThemeColor');
+  bindColor('nightTextColor');
+  bindColor('nightBgColor');
+
+  function applyColors(theme) {
+    if (theme === 'day') {
+      const tc = prefs.dayThemeColor || '#286983';
+      const tx = prefs.dayTextColor || '#575279';
+      const bg = prefs.dayBgColor || '#faf4ed';
+      root.style.setProperty('--theme-color', tc);
+      root.style.setProperty('--text-color', tx);
+      root.style.setProperty('--bg-color', bg);
+      root.style.setProperty('--surface', lighten(bg, 5));
+      root.style.setProperty('--hl-low', lighten(bg, -3));
+      root.style.setProperty('--hl-med', lighten(bg, -10));
+    } else {
+      const tc = prefs.nightThemeColor || '#9ccfd8';
+      const tx = prefs.nightTextColor || '#e0def4';
+      const bg = prefs.nightBgColor || '#191724';
+      root.style.setProperty('--theme-color', tc);
+      root.style.setProperty('--text-color', tx);
+      root.style.setProperty('--bg-color', bg);
+      root.style.setProperty('--surface', lighten(bg, 4));
+      root.style.setProperty('--hl-low', lighten(bg, 6));
+      root.style.setProperty('--hl-med', lighten(bg, 14));
+    }
+  }
+
+  function lighten(hex, amt) {
+    let r = parseInt(hex.slice(1,3),16);
+    let g = parseInt(hex.slice(3,5),16);
+    let b = parseInt(hex.slice(5,7),16);
+    r = Math.min(255, Math.max(0, r + amt));
+    g = Math.min(255, Math.max(0, g + amt));
+    b = Math.min(255, Math.max(0, b + amt));
+    return '#' + [r,g,b].map(c => c.toString(16).padStart(2,'0')).join('');
+  }
+
+  // TOC active tracking
+  const sections = Array.from(document.querySelectorAll('.paper-body section[id]'));
+  const tocLinks = Array.from(document.querySelectorAll('.toc-sidebar nav a'));
+
+  function updateToc() {
+    const scrollY = window.scrollY + 120;
+    let active = sections[0];
+    for (const sec of sections) {
+      if (sec.offsetTop <= scrollY) active = sec;
+    }
+    tocLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + active.id);
+    });
+  }
+  window.addEventListener('scroll', updateToc, { passive: true });
+  updateToc();
+
+  // Smooth scroll for internal links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.getElementById(a.getAttribute('href').slice(1));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.pushState(null, '', a.getAttribute('href'));
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
