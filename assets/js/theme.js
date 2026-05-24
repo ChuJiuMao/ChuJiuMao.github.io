@@ -272,21 +272,31 @@ function applyCustomColors(theme, prefs) {
     nav.querySelectorAll('li').forEach(function(li) {
       const childOl = li.querySelector(':scope > ol');
       if (!childOl) return;
+      const link = li.querySelector(':scope > a');
+      if (!link) return;
+
       li.classList.add('toc-has-sub');
       li.classList.add('expanded');
       childOl.classList.add('toc-children');
 
-      const toggle = document.createElement('span');
+      const row = document.createElement('div');
+      row.className = 'toc-row';
+
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
       toggle.className = 'toc-toggle expanded';
-      toggle.tabIndex = 0;
-      toggle.setAttribute('role', 'button');
       toggle.setAttribute('aria-label', '展开/收拢');
-      li.insertBefore(toggle, li.firstChild);
+      toggle.setAttribute('aria-expanded', 'true');
+
+      row.appendChild(toggle);
+      row.appendChild(link);
+      li.insertBefore(row, childOl);
 
       toggle.addEventListener('click', function(e) {
         e.stopPropagation();
         li.classList.toggle('expanded');
         toggle.classList.toggle('expanded');
+        toggle.setAttribute('aria-expanded', li.classList.contains('expanded') ? 'true' : 'false');
         updateMasterBtn();
       });
     });
@@ -304,12 +314,15 @@ function applyCustomColors(theme, prefs) {
       masterBtn.addEventListener('click', function() {
         const hasExpanded = nav.querySelectorAll('.toc-has-sub.expanded').length > 0;
         nav.querySelectorAll('.toc-has-sub').forEach(function(li) {
+          const toggle = li.querySelector(':scope > .toc-row > .toc-toggle');
           if (hasExpanded) {
             li.classList.remove('expanded');
-            li.querySelector(':scope > .toc-toggle')?.classList.remove('expanded');
+            toggle?.classList.remove('expanded');
+            toggle?.setAttribute('aria-expanded', 'false');
           } else {
             li.classList.add('expanded');
-            li.querySelector(':scope > .toc-toggle')?.classList.add('expanded');
+            toggle?.classList.add('expanded');
+            toggle?.setAttribute('aria-expanded', 'true');
           }
         });
         updateMasterBtn();

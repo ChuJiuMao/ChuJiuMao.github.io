@@ -112,15 +112,23 @@
 }
 
 /* TOC tree toggle triangles */
-.toc-has-sub {
-  position: relative;
+.toc-row {
+  display: flex;
+  align-items: flex-start;
+  gap: .15rem;
 }
-.toc-has-sub > .toc-toggle {
-  position: absolute;
-  left: -4px;
-  top: .48rem;
+.toc-row > a {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.toc-has-sub > .toc-row > .toc-toggle {
+  flex: 0 0 14px;
   width: 14px;
   height: 14px;
+  margin-top: .45rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,20 +140,20 @@
   user-select: none;
   transition: color .2s, background .2s;
 }
-.toc-has-sub > .toc-toggle:hover {
+.toc-has-sub > .toc-row > .toc-toggle:hover {
   color: var(--theme-color);
 }
-.toc-has-sub > .toc-toggle::before {
+.toc-has-sub > .toc-row > .toc-toggle::before {
   content: "▶";
   display: block;
   font-size: .55rem;
 }
-.toc-has-sub > .toc-toggle.expanded::before {
+.toc-has-sub > .toc-row > .toc-toggle.expanded::before {
   content: "▼";
   font-size: .5rem;
 }
-.toc-has-sub > a {
-  padding-left: 1.1rem !important;
+.toc-has-sub > .toc-row > a {
+  padding-left: .25rem !important;
 }
 .toc-has-sub .toc-children {
   display: none;
