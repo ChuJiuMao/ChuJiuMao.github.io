@@ -1,5 +1,5 @@
-/* ===== Lightweight nav-only script for article pages ===== */
-/* (Article pages have their own inline JS for theme/settings/TOC) */
+/* ===== Lightweight nav-only fallback ===== */
+/* Current pages use theme.js, which already handles mobile navigation. */
 
 (function() {
   // Mobile nav toggle

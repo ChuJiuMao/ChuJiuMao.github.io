@@ -136,6 +136,7 @@
   font-family: var(--heading-font);
 }
 .post-tag.tag-article { color: var(--foam); border-color: var(--foam); }
+.post-tag.tag-book { color: var(--iris); border-color: var(--iris); }
 .post-tag.tag-note { color: var(--gold); border-color: var(--gold); }
 .post-tag.tag-thought { color: var(--iris); border-color: var(--iris); }
 .post-tag.tag-project { color: var(--love); border-color: var(--love); }
@@ -207,15 +208,4 @@
 /* ---------- Touch device hover suppression ---------- */
 @media (hover: none) {
   .post-item a:hover .post-title { color: inherit; }
-}
-
-/* ---------- Root page content wrappers (about, archives, categories) ---------- */
-@media (max-width: 640px) {
-  .page-title { padding: 2rem 1.5rem 0 !important; font-size: 1.3rem !important; }
-  .page-subtitle { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
-  .about-wrap, .archive-wrap, .categories-wrap { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
-  .about-card { padding: 1.2rem; }
-  .archive-item { flex-direction: column; gap: .2rem; padding: .5rem .4rem; }
-  .archive-date { min-width: auto; }
-  .cat-post-item { padding: .5rem .4rem; }
 }

@@ -8,95 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;600;700&family=JetBrains+Mono:wght@400;600&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/global.css">
-<style>
-.page-title {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 2.5rem 2rem 0;
-  font-family: var(--heading-font);
-  font-size: 1.6rem;
-  font-weight: 700;
-}
-.page-title span { color: var(--theme-color); }
-
-.categories-wrap {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 0 2rem 4rem;
-}
-
-.category-section {
-  margin: 2rem 0;
-}
-.category-header {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.3rem;
-  border-bottom: 2px solid var(--hl-med);
-}
-.category-name {
-  font-family: var(--heading-font);
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-.category-count {
-  font-family: var(--heading-font);
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.cat-post-item {
-  display: block;
-  padding: 0.7rem 0.8rem;
-  border-radius: 4px;
-  text-decoration: none;
-  color: var(--text-color);
-  transition: background 0.2s;
-}
-.cat-post-item:hover {
-  background: var(--hl-low);
-}
-.cat-post-item:hover .cat-post-title {
-  color: var(--theme-color);
-}
-.cat-post-title {
-  font-family: var(--heading-font);
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-.cat-post-date {
-  font-size: 0.82rem;
-  color: var(--muted);
-  font-family: var(--heading-font);
-  margin-left: 0.5em;
-}
-
-.empty-category {
-  padding: 3rem 2rem;
-  text-align: center;
-  color: var(--muted);
-  border: 2px dashed var(--hl-med);
-  border-radius: 8px;
-  margin: 2rem 0;
-}
-.empty-category p {
-  font-family: var(--heading-font);
-  font-size: 0.95rem;
-  margin-bottom: 0.3rem;
-}
-.empty-category .hint {
-  font-size: 0.85rem;
-  color: var(--subtle);
-}
-
-@media (max-width: 640px) {
-  .page-title { padding: 2rem 1.5rem 0; }
-  .categories-wrap { padding: 0 1.5rem 3rem; }
-}
-</style>
 </head>
 <body>
 
@@ -125,7 +36,7 @@
     <!-- Article 分类 -->
     <div class="category-section">
       <div class="category-header">
-        <span class="category-name">📄 Article</span>
+        <span class="category-name">Article</span>
         <span class="category-count">4 篇</span>
       </div>
       <a class="cat-post-item" href="posts/article/error-aware-probabilistic-training.html">
@@ -141,15 +52,15 @@
         <span class="cat-post-date">2025</span>
       </a>
       <a class="cat-post-item" href="posts/article/simple-input-output-dependencies.html">
-        <span class="cat-post-title">简单的输入-输出依赖关系揭示生态记忆</span>
-        <span class="cat-post-date">2024</span>
+        <span class="cat-post-title">简单输入-输出依赖解释神经元活动</span>
+        <span class="cat-post-date">2026</span>
       </a>
     </div>
 
     <!-- Book 分类 -->
     <div class="category-section">
       <div class="category-header">
-        <span class="category-name">📖 Book</span>
+        <span class="category-name">Book</span>
         <span class="category-count">1 篇</span>
       </div>
       <a class="cat-post-item" href="posts/article/supremacy-ai-chatgpt-race.html">
@@ -158,24 +69,9 @@
       </a>
     </div>
 
-    <!-- 占位：后续分类示例 -->
-    <!--
-    <div class="category-section">
-      <div class="category-header">
-        <span class="category-name">💭 随想</span>
-        <span class="category-count">0 篇</span>
-      </div>
-      <div class="empty-category">
-        <p>暂无文章</p>
-        <p class="hint">新分类创建后，文章会出现在这里</p>
-      </div>
-    </div>
-    -->
-
-    <!-- 占位：空分类提示模板 -->
     <div class="empty-category">
       <p>更多分类即将到来</p>
-      <p class="hint">后续添加新分类时，复制上方的 category-section 结构即可</p>
+      <p class="hint">新分类创建后，文章会出现在这里</p>
     </div>
 
   </div>
