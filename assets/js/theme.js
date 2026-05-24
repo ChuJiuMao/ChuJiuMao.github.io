@@ -264,8 +264,7 @@ function applyCustomColors(theme, prefs) {
   const sidebar = document.getElementById('tocSidebar');
   const nav = sidebar && sidebar.querySelector('nav ol');
   if (!nav) return;
-  // Skip if this TOC already has custom tree toggle classes (e.g. supremacy)
-  if (nav.querySelector('.toc-item, .toc-part-toggle')) return;
+  if (nav.dataset.treeReady === 'true') return;
 
   // Add toggle triangles and master button
   function initTree() {
@@ -274,6 +273,7 @@ function applyCustomColors(theme, prefs) {
       const childOl = li.querySelector(':scope > ol');
       if (!childOl) return;
       li.classList.add('toc-has-sub');
+      li.classList.add('expanded');
       childOl.classList.add('toc-children');
 
       const toggle = document.createElement('span');
@@ -293,7 +293,7 @@ function applyCustomColors(theme, prefs) {
 
     // 2. Add master toggle to .toc-header
     const header = sidebar.querySelector('.toc-header');
-    if (header && !header.querySelector('.toc-tree-btn')) {
+    if (header && nav.querySelector('.toc-has-sub') && !header.querySelector('.toc-tree-btn')) {
       const masterBtn = document.createElement('button');
       masterBtn.className = 'toc-tree-btn';
       masterBtn.id = 'tocTreeBtn';
@@ -316,6 +316,7 @@ function applyCustomColors(theme, prefs) {
       });
     }
     updateMasterBtn();
+    nav.dataset.treeReady = 'true';
   }
 
   function updateMasterBtn() {

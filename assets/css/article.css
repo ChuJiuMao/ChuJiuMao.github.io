@@ -103,6 +103,13 @@
   border-left-color: var(--theme-color);
   background: var(--hl-low);
 }
+.toc-sidebar nav ol ol {
+  margin-left: .45rem;
+}
+.toc-sidebar nav ol ol a {
+  padding-left: 1rem;
+  font-size: .8rem;
+}
 
 /* TOC tree toggle triangles */
 .toc-has-sub {
