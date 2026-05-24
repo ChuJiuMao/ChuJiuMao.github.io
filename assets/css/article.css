@@ -118,8 +118,7 @@
 .toc-has-sub > .toc-toggle {
   position: absolute;
   left: -4px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: .48rem;
   width: 14px;
   height: 14px;
   display: flex;
@@ -131,7 +130,7 @@
   line-height: 1;
   border-radius: 3px;
   user-select: none;
-  transition: color .2s, transform .1s;
+  transition: color .2s, background .2s;
 }
 .toc-has-sub > .toc-toggle:hover {
   color: var(--theme-color);
@@ -144,9 +143,6 @@
 .toc-has-sub > .toc-toggle.expanded::before {
   content: "▼";
   font-size: .5rem;
-}
-.toc-has-sub > .toc-toggle.expanded {
-  transform: translateY(-50%);
 }
 .toc-has-sub > a {
   padding-left: 1.1rem !important;
