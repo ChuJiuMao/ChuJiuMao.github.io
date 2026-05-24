@@ -113,19 +113,17 @@
 
 /* TOC tree toggle triangles */
 .toc-row {
-  display: flex;
-  align-items: flex-start;
-  gap: .15rem;
+  position: relative;
 }
 .toc-row > a {
-  flex: 1 1 auto;
-  min-width: 0;
+  display: block;
 }
 .toc-has-sub > .toc-row > .toc-toggle {
-  flex: 0 0 14px;
+  position: absolute;
+  left: -.82rem;
+  top: .45rem;
   width: 14px;
   height: 14px;
-  margin-top: .45rem;
   padding: 0;
   border: 0;
   background: transparent;
@@ -151,9 +149,6 @@
 .toc-has-sub > .toc-row > .toc-toggle.expanded::before {
   content: "▼";
   font-size: .5rem;
-}
-.toc-has-sub > .toc-row > a {
-  padding-left: .25rem !important;
 }
 .toc-has-sub .toc-children {
   display: none;
