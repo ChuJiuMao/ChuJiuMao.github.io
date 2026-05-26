@@ -196,6 +196,7 @@
 
     document.body.insertBefore(html`<div class="toc-overlay" id="tocOverlay"></div>`, main);
     document.body.insertBefore(html`<div class="settings-overlay" id="settingsOverlay"></div>`, main);
+    document.body.classList.add('reader-tools-visible');
   }
 
   function renderLayout() {

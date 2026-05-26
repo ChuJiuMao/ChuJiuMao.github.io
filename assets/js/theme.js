@@ -168,7 +168,11 @@ function applyCustomColors(theme, prefs) {
     });
   }
 
-  bindToggle('indentToggle', checked => { document.documentElement.style.setProperty('--indent', checked ? '2em' : '0em'); });
+  bindToggle('indentToggle', checked => {
+    document.documentElement.style.setProperty('--indent', checked ? '2em' : '0em');
+    document.documentElement.classList.toggle('reader-indent-enabled', checked);
+    document.documentElement.classList.toggle('reader-indent-disabled', !checked);
+  });
   bindToggle('justifyToggle', checked => { document.documentElement.style.setProperty('--text-align', checked ? 'justify' : 'left'); });
   bindToggle('boundaryToggle', checked => { document.documentElement.style.setProperty('--boundary', checked ? 'var(--hl-med)' : 'transparent'); });
   bindToggle('tocToggle', checked => { document.getElementById('pageWrapper')?.classList.toggle('no-toc', !checked); });

@@ -763,3 +763,98 @@ blockquote cite {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+/* ============================================================
+   LAYOUT SAFE ZONE – must be last to avoid override
+   ============================================================ */
+
+:root {
+  --reader-tools-width: 64px;
+  --reader-tools-gap: 28px;
+  --reader-tools-reserve-right: 0px;
+  --figure-dock-reserve-right: 0px;
+  --figure-dock-reserve-left: 0px;
+  --layout-safe-right: calc(var(--reader-tools-reserve-right) + var(--figure-dock-reserve-right));
+  --layout-safe-left-extra: var(--figure-dock-reserve-left);
+}
+
+/* Activate safe zone when toolbar exists */
+body.reader-tools-visible {
+  --reader-tools-reserve-right: calc(var(--reader-tools-width) + var(--reader-tools-gap));
+}
+
+/* Page wrapper gets right padding */
+.page-wrapper {
+  padding-right: var(--layout-safe-right);
+}
+
+/* Paper-main constrained so it never reaches under the toolbar */
+.paper-main {
+  max-width: min(
+    var(--content-width),
+    calc(100vw - var(--toc-width) - var(--layout-safe-left-extra) - var(--layout-safe-right) - 80px)
+  );
+}
+.page-wrapper.no-toc .paper-main {
+  max-width: min(
+    var(--content-width),
+    calc(100vw - var(--layout-safe-left-extra) - var(--layout-safe-right) - 80px)
+  );
+}
+
+/* Toolbar dimensions */
+.fab-group {
+  width: var(--reader-tools-width);
+  box-sizing: border-box;
+}
+
+/* Mobile: no safe zone, toolbar drops to bottom-right */
+@media (max-width: 900px) {
+  body.reader-tools-visible {
+    --reader-tools-reserve-right: 0px;
+  }
+  .paper-main,
+  .page-wrapper.no-toc .paper-main {
+    max-width: min(var(--content-width), calc(100vw - 80px));
+  }
+  .fab-group {
+    right: 12px;
+    bottom: 16px;
+    top: auto;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   FORCED FIRST-PARAGRAPH & SEPARATOR INDENT – must be last
+   ============================================================ */
+
+/* 1. Make body paragraph classes respect user indent variable */
+.paper-body p.TX { text-indent: var(--indent); }
+.paper-body p.indent { text-indent: var(--indent); }
+.paper-body p.CO { text-indent: var(--indent); }
+
+/* 2. noindent in body sections respects user indent; footnotes/endnotes keep 0 */
+.paper-body #not p,
+.paper-body #not li,
+.paper-body #footnotes p,
+.paper-body #footnotes li,
+.paper-body .footnotes p,
+.paper-body .footnotes li { text-indent: 0 !important; }
+
+/* 3. Chapter / section first paragraphs after headings */
+html.reader-indent-enabled .paper-body h2 + p,
+html.reader-indent-enabled .paper-body h3 + p { text-indent: var(--indent); }
+
+/* 4. Paragraphs after hr.transition (the * * * separator) */
+html.reader-indent-enabled .paper-body hr.transition + p { text-indent: var(--indent); }
+
+/* 5. Paragraphs after any hr or transition element – catch-all */
+html.reader-indent-enabled .paper-body hr + p,
+html.reader-indent-enabled .paper-body .transition + p { text-indent: var(--indent); }
+
+/* 6. Disabled: all forced first-paragraphs get 0 indent */
+html.reader-indent-disabled .paper-body h2 + p,
+html.reader-indent-disabled .paper-body h3 + p,
+html.reader-indent-disabled .paper-body hr + p,
+html.reader-indent-disabled .paper-body .transition + p { text-indent: 0; }
