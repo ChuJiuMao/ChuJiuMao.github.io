@@ -60,6 +60,7 @@
     const root = document.createElement('ol');
     let currentPart = null;
     let currentChildren = null;
+    let currentEndnotesChildren = null;
 
     body.querySelectorAll(':scope > section[id]').forEach(section => {
       const heading = sectionHeading(section);
@@ -82,12 +83,34 @@
         if (childOl.children.length) li.appendChild(childOl);
       }
 
-      if (/^第[一二三四五六七八九十]+部分/.test(label)) {
+      const isPart = /^第[一二三四五六七八九十]+部分/.test(label);
+      const isChapter = /^第\s*\d+\s*章/.test(label);
+
+      if (label === '尾注') {
+        currentPart = null;
+        currentChildren = null;
+        const existingOl = li.querySelector(':scope > ol');
+        currentEndnotesChildren = existingOl || document.createElement('ol');
+        if (!existingOl) li.appendChild(currentEndnotesChildren);
+        root.appendChild(li);
+        return;
+      }
+
+      if (currentEndnotesChildren && isChapter) {
+        currentEndnotesChildren.appendChild(li);
+        return;
+      }
+
+      if (currentEndnotesChildren && !isChapter) {
+        currentEndnotesChildren = null;
+      }
+
+      if (isPart) {
         currentPart = li;
         currentChildren = li.querySelector(':scope > ol') || document.createElement('ol');
         if (!li.querySelector(':scope > ol')) li.appendChild(currentChildren);
         root.appendChild(li);
-      } else if (currentChildren && /^第\s*\d+\s*章/.test(label)) {
+      } else if (currentChildren && isChapter) {
         currentChildren.appendChild(li);
       } else {
         currentPart = null;
