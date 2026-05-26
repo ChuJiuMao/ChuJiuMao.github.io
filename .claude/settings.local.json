@@ -5,7 +5,10 @@
       "Bash(python3 *)",
       "WebFetch(domain:www.nature.com)",
       "Bash(curl *)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(git push *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

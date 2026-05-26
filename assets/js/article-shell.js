@@ -232,6 +232,18 @@
       });
       mq.addEventListener('change', syncToolsMode);
       syncToolsMode();
+
+      // Lock toolbar visually when drawer or settings panel is open
+      function syncLock() {
+        const tocOpen = document.getElementById('tocSidebar')?.classList.contains('open');
+        const setOpen = document.getElementById('settingsPanel')?.classList.contains('open');
+        tools.classList.toggle('is-locked', !!(tocOpen || setOpen));
+      }
+      ['tocSidebar', 'settingsPanel'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        new MutationObserver(syncLock).observe(el, { attributes: true, attributeFilter: ['class'] });
+      });
     }
   }
 
