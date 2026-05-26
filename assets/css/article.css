@@ -450,16 +450,23 @@ blockquote cite {
 }
 .paper-body li { margin: .35rem 0; }
 
-/* ---------- FAB Group ---------- */
-.fab-group {
+/* ---------- Reader Tools (collapsible toolbar) ---------- */
+.reader-tools {
   position: fixed;
   right: 1.5rem;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: .6rem;
-  z-index: 100;
+  z-index: 70;
+}
+.reader-tools-toggle { display: none; }
+.reader-tools-panel {
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
 }
 .fab {
   width: 42px;
@@ -817,11 +824,39 @@ body.reader-tools-visible {
   .page-wrapper.no-toc .paper-main {
     max-width: min(var(--content-width), calc(100vw - 80px));
   }
-  .fab-group {
+  .reader-tools {
     right: 12px;
     bottom: 16px;
     top: auto;
     transform: none;
+    z-index: 90;
+  }
+  .reader-tools-toggle {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    border: 1px solid var(--hl-med);
+    background: var(--surface);
+    color: var(--subtle);
+    cursor: pointer;
+    font-size: 1.3rem;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--text-color) 8%, transparent);
+    transition: all .2s;
+  }
+  .reader-tools-toggle:hover {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+  }
+  .reader-tools.is-collapsed .reader-tools-panel { display: none; }
+  .reader-tools:not(.is-collapsed) .reader-tools-panel {
+    position: absolute;
+    right: 0;
+    bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
@@ -829,32 +864,29 @@ body.reader-tools-visible {
    FORCED FIRST-PARAGRAPH & SEPARATOR INDENT – must be last
    ============================================================ */
 
-/* 1. Make body paragraph classes respect user indent variable */
+/* Body paragraph classes respect user indent variable */
 .paper-body p.TX { text-indent: var(--indent); }
 .paper-body p.indent { text-indent: var(--indent); }
 .paper-body p.CO { text-indent: var(--indent); }
 
-/* 2. noindent in body sections respects user indent; footnotes/endnotes keep 0 */
-.paper-body #not p,
-.paper-body #not li,
-.paper-body #footnotes p,
-.paper-body #footnotes li,
-.paper-body .footnotes p,
-.paper-body .footnotes li { text-indent: 0 !important; }
+/* Reset font-weight on paragraphs after transitions (SB1 etc should not inherit bold) */
+.paper-body hr.transition + p,
+.paper-body .transition + p { font-weight: inherit; }
 
-/* 3. Chapter / section first paragraphs after headings */
+/* Indent control via html class */
 html.reader-indent-enabled .paper-body h2 + p,
-html.reader-indent-enabled .paper-body h3 + p { text-indent: var(--indent); }
-
-/* 4. Paragraphs after hr.transition (the * * * separator) */
-html.reader-indent-enabled .paper-body hr.transition + p { text-indent: var(--indent); }
-
-/* 5. Paragraphs after any hr or transition element – catch-all */
+html.reader-indent-enabled .paper-body h3 + p,
+html.reader-indent-enabled .paper-body h4 + p,
 html.reader-indent-enabled .paper-body hr + p,
-html.reader-indent-enabled .paper-body .transition + p { text-indent: var(--indent); }
+html.reader-indent-enabled .paper-body .transition + p {
+  text-indent: var(--indent) !important;
+  font-weight: inherit;
+}
 
-/* 6. Disabled: all forced first-paragraphs get 0 indent */
 html.reader-indent-disabled .paper-body h2 + p,
 html.reader-indent-disabled .paper-body h3 + p,
+html.reader-indent-disabled .paper-body h4 + p,
 html.reader-indent-disabled .paper-body hr + p,
-html.reader-indent-disabled .paper-body .transition + p { text-indent: 0; }
+html.reader-indent-disabled .paper-body .transition + p {
+  text-indent: 0 !important;
+}

@@ -186,17 +186,53 @@
     `);
 
     document.body.prepend(html`
-      <div class="fab-group">
-        <button class="fab" id="themeToggle" title="切换日间/夜间模式">${icon('sun')}</button>
-        <button class="fab" id="settingsToggle" title="阅读设置">${icon('settings')}</button>
-        <button class="fab" id="topBtn" title="回到顶部">${icon('top')}</button>
-        <button class="fab fab-toc" id="tocToggleBtn" title="目录" aria-label="目录">${icon('toc')}</button>
+      <div class="reader-tools" id="readerTools">
+        <button class="reader-tools-toggle" type="button" aria-expanded="true" aria-label="展开阅读工具">☰</button>
+        <div class="reader-tools-panel">
+          <button class="fab" id="themeToggle" title="切换日间/夜间模式">${icon('sun')}</button>
+          <button class="fab" id="settingsToggle" title="阅读设置">${icon('settings')}</button>
+          <button class="fab" id="topBtn" title="回到顶部">${icon('top')}</button>
+          <button class="fab fab-toc" id="tocToggleBtn" title="目录" aria-label="目录">${icon('toc')}</button>
+        </div>
       </div>
     `);
 
     document.body.insertBefore(html`<div class="toc-overlay" id="tocOverlay"></div>`, main);
     document.body.insertBefore(html`<div class="settings-overlay" id="settingsOverlay"></div>`, main);
     document.body.classList.add('reader-tools-visible');
+
+    // Collapsible toolbar on narrow screens
+    const tools = document.getElementById('readerTools');
+    const toggleBtn = tools?.querySelector('.reader-tools-toggle');
+    if (tools && toggleBtn) {
+      const mq = window.matchMedia('(max-width: 1100px)');
+      function setCollapsed(c) {
+        tools.classList.toggle('is-collapsed', c);
+        toggleBtn.setAttribute('aria-expanded', String(!c));
+      }
+      function syncToolsMode() {
+        if (mq.matches) {
+          setCollapsed(true);
+        } else {
+          tools.classList.remove('is-collapsed');
+          toggleBtn.setAttribute('aria-expanded', 'true');
+        }
+      }
+      toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (!mq.matches) return;
+        setCollapsed(!tools.classList.contains('is-collapsed'));
+      });
+      document.addEventListener('click', function(e) {
+        if (!mq.matches) return;
+        if (!tools.contains(e.target)) setCollapsed(true);
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mq.matches) setCollapsed(true);
+      });
+      mq.addEventListener('change', syncToolsMode);
+      syncToolsMode();
+    }
   }
 
   function renderLayout() {
