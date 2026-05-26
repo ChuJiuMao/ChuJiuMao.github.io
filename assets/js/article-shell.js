@@ -69,10 +69,23 @@
       const li = document.createElement('li');
       appendLink(li, section, label);
 
+      const childSections = section.querySelectorAll(':scope > section[id]');
+      if (childSections.length) {
+        const childOl = document.createElement('ol');
+        childSections.forEach(child => {
+          const ch = sectionHeading(child);
+          if (!ch) return;
+          const childLi = document.createElement('li');
+          appendLink(childLi, child, normalizeBookLabel(ch.textContent));
+          childOl.appendChild(childLi);
+        });
+        if (childOl.children.length) li.appendChild(childOl);
+      }
+
       if (/^第[一二三四五六七八九十]+部分/.test(label)) {
         currentPart = li;
-        currentChildren = document.createElement('ol');
-        li.appendChild(currentChildren);
+        currentChildren = li.querySelector(':scope > ol') || document.createElement('ol');
+        if (!li.querySelector(':scope > ol')) li.appendChild(currentChildren);
         root.appendChild(li);
       } else if (currentChildren && /^第\s*\d+\s*章/.test(label)) {
         currentChildren.appendChild(li);
