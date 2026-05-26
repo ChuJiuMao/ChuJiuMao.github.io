@@ -63,6 +63,7 @@
     let currentEndnotesChildren = null;
 
     body.querySelectorAll(':scope > section[id]').forEach(section => {
+      if (section.dataset.tocSkip === 'true') return;
       const heading = sectionHeading(section);
       if (!heading) return;
 
@@ -125,6 +126,7 @@
   function buildArticleTocList(parent) {
     const list = document.createElement('ol');
     parent.querySelectorAll(':scope > section[id]').forEach(section => {
+      if (section.dataset.tocSkip === 'true') return;
       const heading = sectionHeading(section);
       if (!heading) return;
 
