@@ -714,6 +714,50 @@ blockquote cite {
 .fab, .nav-menu-btn, .theme-toggle,
 .post-nav a, .category-tab { min-height: 44px; min-width: 44px; }
 
+/* ===== Book Translation Paragraph Styles ===== */
+
+/* bird-iq-zh.html styles */
+.paper-body p.indent { text-indent: 2em; margin: 0; }
+.paper-body p.noindent { text-indent: 0; margin: 0; }
+.paper-body p.sans { margin: 0; }
+
+.paper-body h2.chtitle { font-family: var(--heading-font); font-size: 1.4rem; font-weight: 700; margin: 2.5rem 0 .8rem; letter-spacing: .02em; display: flex; align-items: baseline; gap: .5rem; }
+.paper-body h2.chtitle .dotted { font-size: 1.2rem; color: var(--theme-color); letter-spacing: .15em; }
+.paper-body h2.chtitle .chtitle1 { flex: 1; }
+
+.paper-body h2.inthead { font-family: var(--heading-font); font-size: 1.3rem; font-weight: 700; margin: 2rem 0 .8rem; letter-spacing: .02em; }
+.paper-body h2.inthead .inthead1 { display: block; font-size: .9rem; font-weight: 500; color: var(--muted); margin-top: .2rem; }
+
+.paper-body h2.h2 { font-family: var(--heading-font); font-size: 1.25rem; font-weight: 600; margin: 2rem 0 .6rem; }
+.paper-body h2.h2n { font-family: var(--heading-font); font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 .5rem; }
+
+.paper-body ol.none { list-style: none; padding: 0; margin: 0; }
+.paper-body ol.none li { margin: .5rem 0; }
+.paper-body p.bib { font-size: .85rem; line-height: 1.5; color: var(--subtle); margin: 0; }
+.paper-body p.caption { font-size: .82rem; line-height: 1.5; color: var(--muted); margin: .5rem 0; }
+.paper-body p.caption a { color: var(--theme-color); }
+.paper-body span.sans { font-family: var(--heading-font); }
+.paper-body span.dotted { letter-spacing: .2em; }
+.paper-body span.small { font-size: .75em; }
+
+/* i-told-you-so-zh.html EPUB-style classes */
+.paper-body p.TX { text-indent: 1.5em; margin: .4em 0; }
+.paper-body p.SB1 { text-indent: 0; margin: 1.2em 0 .4em; font-weight: 600; font-family: var(--heading-font); }
+.paper-body p.SB2 { text-indent: 0; margin: 1.2em 0 .4em; font-weight: 500; font-family: var(--heading-font); font-size: .92rem; }
+.paper-body p.CO { text-indent: 0; margin: .6em 0; font-family: var(--serif-font); }
+.paper-body p.NTX { font-size: .82rem; line-height: 1.5; color: var(--subtle); margin: .3em 0; }
+.paper-body p.FN { font-size: .82rem; line-height: 1.45; color: var(--subtle); margin: .4em 0; padding-left: .5em; }
+.paper-body p.EXTF1 { font-size: .85rem; line-height: 1.5; color: var(--muted); margin: .4em 0; }
+.paper-body h2.CT { font-family: var(--heading-font); font-size: 1.3rem; font-weight: 700; margin: 2rem 0 .8rem; }
+.paper-body h2.CN { font-family: var(--heading-font); font-size: 1.2rem; font-weight: 600; margin: 2rem 0 .6rem; color: var(--muted); }
+.paper-body .en_tx { display: none; }
+.paper-body hr.transition { border: none; border-top: 1px solid var(--hl-med); margin: 1.5em 0; }
+
+/* supremacy-ai-chatgpt-race.html */
+.paper-body p.EXT_V { text-indent: 0; margin: .4em 0; background: var(--hl-low); padding: .5em .8em; border-radius: 6px; }
+.paper-body p.EXT_VF { text-indent: 0; margin: .4em 0; }
+.paper-body p.EXT_V1 { text-indent: 0; margin: .4em 0; font-style: italic; }
+
 /* --- Reduced motion --- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
