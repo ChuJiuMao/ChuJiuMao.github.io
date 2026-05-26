@@ -750,6 +750,7 @@ blockquote cite {
 .paper-body p.EXTF1 { font-size: .85rem; line-height: 1.5; color: var(--muted); margin: .4em 0; }
 .paper-body h2.CT { font-family: var(--heading-font); font-size: 1.3rem; font-weight: 700; margin: 2rem 0 .8rem; }
 .paper-body h2.CN { font-family: var(--heading-font); font-size: 1.2rem; font-weight: 600; margin: 2rem 0 .6rem; color: var(--muted); }
+.paper-body h3.BMH1 { font-family: var(--heading-font); font-size: 1rem; font-weight: 600; margin: 1.5rem 0 .5rem; color: var(--subtle); }
 .paper-body .en_tx { display: none; }
 .paper-body hr.transition { border: none; border-top: 1px solid var(--hl-med); margin: 1.5em 0; }
 
