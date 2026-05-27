@@ -443,6 +443,85 @@
 | 参考文献/尾注 | 全部保持英文原文，不翻译任何内容（包括出版城市、页码等） |
 | 脚注内容 | 已经翻译为中文的保留中文，但需要检查是否有格式断裂 |
 
+#### 10.4.5 双语引语折叠（后期清理）
+
+初版翻译常产生 `英文原文（"中文译文"）` 双语并列格式。后期需将其折叠为纯中文。
+
+**识别与检测**
+
+双语对的结构特征：
+
+```
+英文原文\u201d\uff08\u201c中文译文\u201d\uff09
+```
+
+即：英文原文以弯闭引号 `"` (U+201D) 结束，紧跟 `（"` (U+FF08 U+201C)，然后是中文译文，最后 `"）` (U+201D U+FF09)。开头的引号有时是 ASCII `"` (U+0022)，有时是弯开引号 `"` (U+201C)，需逐条确认。
+
+快速扫描脚本（检测正文范围内的残留双语对）：
+
+```python
+import re
+
+with open('article.html', encoding='utf-8') as f:
+    lines = f.readlines()
+
+for i, line in enumerate(lines, 1):
+    if i > 720:   # 跳过参考文献区
+        break
+    if '\uff08\u201c' not in line:
+        continue
+    idx = 0
+    while True:
+        pos = line.find('\uff08\u201c', idx)
+        if pos == -1:
+            break
+        end = line.find('\uff09', pos)
+        inner = line[pos:end+1] if end != -1 else line[pos:]
+        has_cn = any('\u4e00' <= c <= '\u9fff' for c in inner)
+        has_en = bool(re.search(r'[A-Za-z]{4,}', inner))
+        if has_cn and has_en:
+            print(f'L{i}: {inner[:120]}')
+        idx = (end + 1) if end != -1 else len(line)
+```
+
+**折叠规则**
+
+| 情况 | 处理方式 |
+|------|----------|
+| 标准双语对 `"英文"\uff08"中文"\uff09` | 删除英文部分及 `\uff08` `\uff09` 包裹，保留中文译文（含其弯引号） |
+| 英文句中含 `<sup>` 脚注锚点 | 折叠后将 `<sup>...</sup>` 移到中文对应位置（通常是对应词语之后） |
+| 引语前半已翻译、后半未翻（分裂引语） | 前半去掉中间多余闭引号，后半英文部分折叠；两段中文合并为一个完整引语 |
+| `《中文书名》（"English Title"）` | **不处理**——这是书名括注格式，`（"` 内无中文段落内容，跳过 |
+| 参考文献区（通常行 720 以后） | **不处理**——英文是文献标题，不翻译 |
+
+**引号类型陷阱（关键）**
+
+文件内常混用三种引号：
+- ASCII `"` U+0022
+- 弯开引号 `"` U+201C
+- 弯闭引号 `"` U+201D
+
+Python 的 `str.replace()` / `re.sub()` 对这三种完全不同，目测无法区分。**替换前必须先用以下方式确认每个引号的确切码位：**
+
+```python
+with open('article.html', encoding='utf-8') as f:
+    content = f.read()
+
+idx = content.find('目标段落关键词')
+chunk = content[idx-1:idx+200]
+escaped = ''.join(
+    f'\\u{ord(c):04x}' if ord(c) > 127 else c
+    for c in chunk
+)
+print(escaped)
+```
+
+拿到精确的 Unicode 转义序列后，再在替换脚本中写字符串字面量（使用 `\uXXXX`），逐条检查 `content.count(old) == 1` 再执行替换。
+
+**验证**
+
+全部替换完成后，重跑上方检测脚本，确认输出为空（无残留双语对）。
+
 ---
 
 ### 10.5 CSS / 样式问题
