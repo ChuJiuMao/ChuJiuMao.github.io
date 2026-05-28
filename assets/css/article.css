@@ -839,7 +839,8 @@ body.reader-tools-visible {
   }
   .paper-main,
   .page-wrapper.no-toc .paper-main {
-    max-width: min(var(--content-width), calc(100vw - 80px));
+    width: 100%;
+    max-width: var(--content-width);
   }
   .reader-tools {
     right: 12px;
