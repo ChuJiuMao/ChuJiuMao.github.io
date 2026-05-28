@@ -424,6 +424,28 @@ mjx-container[display="true"] { margin: 1.5em 0 !important; max-width: 100%; ove
 }
 .data-box a { border-bottom: none; }
 
+.missing-ocr-note {
+  margin: 1em 0;
+  padding: .7em 1em;
+  border-left: 3px solid var(--gold);
+  border-radius: 0 4px 4px 0;
+  background: var(--hl-low);
+  color: var(--muted);
+  font-family: var(--heading-font);
+  font-size: .9em;
+  text-indent: 0 !important;
+}
+
+#hdqt-missing-footnote-targets .missing-ocr-note {
+  margin: .35em 0;
+  padding: 0;
+  border-left: none;
+  background: transparent;
+  font-family: var(--serif-font);
+  font-size: .86em;
+  line-height: 1.5;
+}
+
 /* Blockquote */
 blockquote {
   margin: 1.8em 0;
