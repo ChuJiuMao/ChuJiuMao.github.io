@@ -1,0 +1,82 @@
+[
+  {
+    "path": "posts/article/hdqt-v01-p01-zh.html",
+    "title": "量子理论的历史发展：第一卷第一分册，普朗克、爱因斯坦、玻尔和索末菲的量子理论",
+    "category": "Book",
+    "date": "2026-05-28",
+    "authors": "Jagdish Mehra, Helmut Rechenberg",
+    "excerpt": "《量子理论的历史发展》中文翻译连载。第一分册涵盖1900-1925年量子理论的创立与困境：普朗克黑体辐射、爱因斯坦光量子、玻尔原子理论与索末菲扩展。",
+    "stats": "序言 · 致谢 · 绪论 · 3 章 · 约 30 万字"
+  },
+  {
+    "path": "posts/article/bird-iq-zh.html",
+    "title": "鸟类的智商：创新、智慧与鸟类世界中的问题解决",
+    "category": "Book",
+    "date": "2026-05-27",
+    "authors": "Louis Lefebvre",
+    "excerpt": "麦吉尔大学动物认知教授三十年研究结晶，通过四千余例鸟类创新数据库，揭示乌鸦、鹦鹉、山雀等\"鸟脑\"的真正智慧。",
+    "stats": "10 章 + 附录 · 约 10 万字"
+  },
+  {
+    "path": "posts/article/i-told-you-so-zh.html",
+    "title": "我早就告诉过你：被嘲笑、流放、监禁却最终被证明正确的科学家们",
+    "category": "Book",
+    "date": "2026-05-27",
+    "authors": "Matt Kaplan",
+    "excerpt": "《经济学人》科学记者讲述历史上挑战范式的科学家如何被体制打压，以及当今科学界的偏见与政治如何仍在阻碍真理。",
+    "stats": "10 章 + 注释 · 约 12 万字"
+  },
+  {
+    "path": "posts/article/supremacy-ai-chatgpt-race.html",
+    "title": "主宰之战：AI、ChatGPT 与改变世界的竞赛",
+    "category": "Book",
+    "date": "2026-05-23",
+    "authors": "Parmy Olson",
+    "excerpt": "关于 Sam Altman、Demis Hassabis 和 AI 竞赛的内幕故事，从 OpenAI 和 DeepMind 的崛起到 AGI 安全的全球博弈。",
+    "stats": "22 章 · 约 12 万字"
+  },
+  {
+    "path": "posts/article/volitional-neuromorphic-devices.html",
+    "title": "基于亚皮焦耳每比特意动神经形态器件的精准目标识别与跟踪",
+    "category": "Article",
+    "date": "2026-05-23",
+    "authors": "Yixuan Huang, Qihao Sun, Fuxing Dai et al.",
+    "excerpt": "通过引入主动意动注意力（AVA）机制，利用栅压可调差分光谱响应，实现 0.625 pJ/bit 的极致信息能量效率和 1.17% 的数据压缩比，为高光谱成像中的精准目标识别与跟踪提供了可持续的类脑计算方案。",
+    "stats": "~ 6,000 字 · 46 篇参考文献"
+  },
+  {
+    "path": "posts/article/adaptive-spatial-temporal-attention.html",
+    "title": "基于存内注意力启发器件的自适应时空信息处理",
+    "category": "Article",
+    "date": "2026-05-22",
+    "authors": "Jiong Pan, Fan Wu, Kangan Qian et al.",
+    "excerpt": "利用 0D-2D 异维调制的注意力启发器件，实现存内模拟计算的自适应时空信息处理原语。在自动驾驶边缘智能场景中达到 190 倍面积缩减、47 倍延迟降低和 1411 倍能耗节约。",
+    "stats": "~ 7,000 字 · 46 篇参考文献"
+  },
+  {
+    "path": "posts/article/simple-input-output-dependencies.html",
+    "title": "简单输入-输出依赖解释神经元活动",
+    "category": "Article",
+    "date": "2026-05-18",
+    "authors": "Christopher W. Lynn",
+    "excerpt": "证明直接输入依赖关系能够解释多脑区、多物种神经元活动中的大部分变异性，并揭示稀疏、鲁棒的神经编码结构。"
+  },
+  {
+    "path": "posts/article/error-aware-probabilistic-training.html",
+    "title": "面向忆阻神经网络的误差感知概率训练",
+    "category": "Article",
+    "date": "2025-12-12",
+    "authors": "Jinchang Liu, Jian Lu, Shuangzhu Tang, Tuo Shi, Qi Liu et al.",
+    "excerpt": "提出误差感知概率更新方法（EaPU），以概率方式匹配忆阻器的随机更新过程，将权重更新降低到 <1‰。在 180 nm 忆阻器系统上实验验证图像去噪与超分辨率，>60% 准确率提升，~50 倍训练能耗降低，相比 GPU 能耗降低近 6 个数量级。",
+    "stats": "Nature Communications · ~4,000 字"
+  },
+  {
+    "path": "posts/article/hdqt-v01-p02.html",
+    "title": "量子理论的历史发展：第一卷第二分册",
+    "category": "Book",
+    "date": "2026-05-30",
+    "authors": "Jagdish Mehra, Helmut Rechenberg",
+    "excerpt": "第二分册涵盖第四章至第六章：原子模型的力学与光谱学失败、辐射理论的问题、原子理论中的新方法与新概念。从泡利的早期工作到电子自旋的发现，记录了玻尔-索末菲理论走向困境与量子力学黎明前的关键岁月。",
+    "stats": "5470行 · 259脚注 · 242源页 · 中文翻译"
+  }
+]
