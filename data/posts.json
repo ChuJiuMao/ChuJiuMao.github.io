@@ -78,5 +78,41 @@
     "authors": "Jagdish Mehra, Helmut Rechenberg",
     "excerpt": "第二分册涵盖第四章至第六章：原子模型的力学与光谱学失败、辐射理论的问题、原子理论中的新方法与新概念。从泡利的早期工作到电子自旋的发现，记录了玻尔-索末菲理论走向困境与量子力学黎明前的关键岁月。",
     "stats": "5470行 · 259脚注 · 242源页 · 中文翻译"
+  },
+  {
+    "path": "posts/article/hdqt-v02.html",
+    "title": "量子理论的历史发展：第二卷",
+    "category": "Book",
+    "date": "2026-05-31",
+    "authors": "Jagdish Mehra, Helmut Rechenberg",
+    "excerpt": "第二卷：量子力学的发现，1925年。涵盖海森堡、玻恩、约当等人创立矩阵力学的完整历程。",
+    "stats": "3860行 · 中文译"
+  },
+  {
+    "path": "posts/article/hdqt-v03.html",
+    "title": "量子理论的历史发展：第三卷",
+    "category": "Book",
+    "date": "2026-05-31",
+    "authors": "Jagdish Mehra, Helmut Rechenberg",
+    "excerpt": "第三卷：矩阵力学的创立及其修正，1925-1926年。",
+    "stats": "1322行 · 中文译"
+  },
+  {
+    "path": "posts/article/hdqt-v04.html",
+    "title": "量子理论的历史发展：第四卷",
+    "category": "Book",
+    "date": "2026-05-31",
+    "authors": "Jagdish Mehra, Helmut Rechenberg",
+    "excerpt": "第四卷：量子力学的基本方程，1925-1926年。",
+    "stats": "653行 · 中文译"
+  },
+  {
+    "path": "posts/article/hdqt-v05-p01.html",
+    "title": "量子理论的历史发展：第五卷第一分册",
+    "category": "Book",
+    "date": "2026-05-31",
+    "authors": "Jagdish Mehra, Helmut Rechenberg",
+    "excerpt": "第五卷第一分册：薛定谔与波动力学的兴起，1887-1925年。",
+    "stats": "5343行 · 中文译"
   }
 ]
